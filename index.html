@@ -16,68 +16,46 @@
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
-
-  /* NAV */
   nav{background:var(--primary);padding:0 16px;display:flex;align-items:center;position:sticky;top:0;z-index:100;overflow-x:auto;box-shadow:0 2px 8px rgba(26,111,196,0.25)}
   .nav-logo{font-weight:800;font-size:1.1rem;color:#fff;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.25);margin-right:8px;white-space:nowrap;letter-spacing:-.3px}
   .nav-logo span{color:#b8d8ff}
   .nav-btn{background:none;border:none;color:rgba(255,255,255,0.75);padding:14px;cursor:pointer;font-size:.85rem;font-weight:600;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap}
   .nav-btn:hover{color:#fff}.nav-btn.active{color:#fff;border-bottom-color:#fff}
-
-  /* PAGES */
   .page{display:none;padding:24px 16px;max-width:960px;margin:0 auto}.page.active{display:block}
-
-  /* CARD */
   .card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow)}
   .card-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--primary);margin-bottom:14px;display:flex;align-items:center;gap:6px}
-
-  /* FORM */
   label{font-size:.8rem;color:var(--text2);font-weight:600;display:block;margin-bottom:4px;margin-top:12px}
   label:first-child{margin-top:0}
   input,select{width:100%;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-size:.9rem;outline:none;transition:border .2s}
   input:focus,select:focus{border-color:var(--primary);background:#fff}
   input[readonly]{background:var(--primary-light);color:var(--primary);font-weight:700;border-color:var(--primary)}
   input::placeholder{color:#a0b4cc}
-
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-
-  /* BUTTONS */
   .btn{display:inline-block;padding:10px 20px;border-radius:8px;border:none;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .2s}
   .btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-dark)}
   .btn-outline{background:#fff;border:1.5px solid var(--border);color:var(--text2)}.btn-outline:hover{border-color:var(--primary);color:var(--primary)}
   .btn-green{background:var(--green);color:#fff;font-weight:800}.btn-green:hover{opacity:.88}
   .btn-danger{background:transparent;border:1.5px solid #e0b0ac;color:var(--red)}.btn-danger:hover{background:var(--red-bg)}
   .btn-sm{padding:7px 14px;font-size:.78rem}
-
-  /* RUNNER LIST */
   .runner-item{background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
   .runner-avatar{width:44px;height:44px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;flex-shrink:0;color:#fff}
   .runner-info{flex:1;min-width:0}.runner-name{font-weight:700;font-size:.95rem;color:var(--text)}
   .runner-sub{font-size:.78rem;color:var(--text2);margin-top:2px}
   .runner-actions{display:flex;gap:6px;flex-shrink:0}
-
-  /* CITY GRID */
   .city-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:8px}
   .city-btn{background:var(--bg3);border:1.5px solid var(--border);border-radius:10px;padding:10px 6px;cursor:pointer;text-align:center;font-size:.8rem;font-weight:600;color:var(--text2);transition:all .2s}
   .city-btn:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-light)}
   .city-btn.sel{border-color:var(--primary);background:var(--primary);color:#fff}
   .city-flag{font-size:1.3rem;display:block;margin-bottom:3px}
-
-  /* BADGES */
   .badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:.72rem;font-weight:700}
   .badge-green{background:var(--green-bg);color:var(--green)}
   .badge-yellow{background:var(--yellow-bg);color:var(--yellow)}
   .badge-red{background:var(--red-bg);color:var(--red)}
-  .badge-blue{background:var(--primary-light);color:var(--primary)}
-
-  /* STATS */
   .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
   .stat-box{background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;padding:16px;text-align:center;box-shadow:var(--shadow)}
   .stat-val{font-size:1.3rem;font-weight:800;color:var(--primary);font-variant-numeric:tabular-nums}
   .stat-label{font-size:.7rem;color:var(--text2);font-weight:600;margin-top:4px;text-transform:uppercase}
-
-  /* TABLE */
   .km-table{width:100%;border-collapse:collapse}
   .km-table th{font-size:.72rem;text-transform:uppercase;color:var(--text2);font-weight:700;padding:8px 10px;text-align:left;border-bottom:2px solid var(--border);white-space:nowrap}
   .km-table td{padding:9px 10px;font-size:.85rem;border-bottom:1px solid var(--border);vertical-align:middle}
@@ -86,27 +64,20 @@
   .km-passed td{opacity:.45}
   .km-next td{background:var(--primary-light) !important}
   .km-next td b{color:var(--primary)}
-
-  /* PRONOSTICO */
   .prono-result{background:linear-gradient(135deg,var(--primary),#2980d9);border-radius:14px;padding:28px;text-align:center;margin-top:16px;color:#fff;box-shadow:0 4px 16px rgba(26,111,196,0.3)}
   .prono-time{font-size:3rem;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-1px}
-
-  /* ALERTS */
   .alert{padding:10px 14px;border-radius:8px;font-size:.85rem;margin-top:10px}
   .alert-info{background:var(--primary-light);border:1px solid var(--border);color:var(--primary)}
-  .alert-warn{background:var(--yellow-bg);border:1px solid #f0d080;color:var(--yellow)}
   .alert-landscape{background:var(--yellow-bg);border:1.5px solid #f0d080;color:var(--yellow);padding:12px 16px;border-radius:10px;display:flex;align-items:center;gap:10px;margin-bottom:16px;font-weight:600}
-
-  /* PUNTO ROW */
   .punto-row{display:grid;grid-template-columns:75px 1fr auto;gap:8px;margin-bottom:8px;align-items:center}
-
-  /* MISC */
+  .marca-inputs{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:6px;align-items:center;margin-top:4px}
+  .marca-sep{font-size:1.4rem;font-weight:800;color:var(--primary);text-align:center;line-height:1}
+  .marca-lbl{font-size:.7rem;color:var(--text2);text-align:center;margin-top:2px}
   .sep{height:1px;background:var(--border);margin:16px 0}
   h2{font-size:1.15rem;font-weight:800;margin-bottom:4px;color:var(--text)}
   .text2{color:var(--text2);font-size:.85rem}
   .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
   .page-header-left{display:flex;align-items:center;gap:12px}
-
   @media(max-width:640px){
     .row2,.row3{grid-template-columns:1fr}
     .stats-row{grid-template-columns:1fr 1fr}
@@ -114,9 +85,7 @@
     .city-grid{grid-template-columns:repeat(3,1fr)}
     .runner-actions{flex-direction:column}
   }
-  @media(orientation:portrait) and (max-width:768px){
-    .landscape-hint{display:flex !important}
-  }
+  @media(orientation:portrait) and (max-width:768px){.landscape-hint{display:flex !important}}
   .landscape-hint{display:none}
 </style>
 </head>
@@ -130,7 +99,7 @@
   <button class="nav-btn" onclick="showPage('pronostico')">Pronóstico</button>
 </nav>
 
-<!-- ===== LISTA ===== -->
+<!-- LISTA -->
 <div id="page-lista" class="page active">
   <div class="page-header">
     <div><h2>Mis Corredores</h2><p class="text2">Hasta 5 corredores simultáneos</p></div>
@@ -139,7 +108,7 @@
   <div id="lista-corredores"></div>
 </div>
 
-<!-- ===== FICHA ===== -->
+<!-- FICHA -->
 <div id="page-ficha" class="page">
   <div class="page-header">
     <div class="page-header-left">
@@ -147,23 +116,17 @@
       <div><h2 id="ficha-titulo">Nuevo Corredor</h2><p class="text2">Datos y configuración</p></div>
     </div>
   </div>
-
   <div class="card">
     <div class="card-title">👤 Datos personales</div>
     <label>Nombre del corredor *</label>
     <input type="text" id="f-nombre" placeholder="Ej: Carlos García">
     <div class="row2">
-      <div>
-        <label>Dorsal</label>
-        <input type="number" id="f-dorsal" placeholder="Ej: 4521" min="1">
-      </div>
-      <div>
-        <label>Sexo</label>
+      <div><label>Dorsal</label><input type="number" id="f-dorsal" placeholder="Ej: 4521" min="1"></div>
+      <div><label>Sexo</label>
         <select id="f-sexo"><option value="">—</option><option value="M">Masculino</option><option value="F">Femenino</option></select>
       </div>
     </div>
   </div>
-
   <div class="card">
     <div class="card-title">🌍 Ciudad / Carrera</div>
     <p class="text2" style="margin-bottom:10px;">Selecciona la ciudad para cargar sus puntos de encuentro automáticamente.</p>
@@ -171,18 +134,27 @@
     <label style="margin-top:14px;">Nombre de la carrera</label>
     <input type="text" id="f-carrera" placeholder="Ej: Maratón de Barcelona 2025">
   </div>
-
   <div class="card">
     <div class="card-title">⏱ Marca objetivo y salida</div>
-    <div class="row2">
+    <label>Marca objetivo</label>
+    <div class="marca-inputs">
       <div>
-        <label>Marca objetivo (h:mm:ss)</label>
-        <input type="text" id="f-marca" placeholder="Ej: 3:45:00" inputmode="numeric" oninput="calcularRitmo()">
+        <input type="number" id="f-marca-h" placeholder="0" min="0" max="9" inputmode="numeric" oninput="calcularRitmo()">
+        <div class="marca-lbl">h</div>
       </div>
+      <div class="marca-sep">:</div>
       <div>
-        <label>Ritmo/km calculado</label>
-        <input type="text" id="f-ritmo" readonly placeholder="—">
+        <input type="number" id="f-marca-m" placeholder="00" min="0" max="59" inputmode="numeric" oninput="calcularRitmo()">
+        <div class="marca-lbl">min</div>
       </div>
+      <div class="marca-sep">:</div>
+      <div>
+        <input type="number" id="f-marca-s" placeholder="00" min="0" max="59" inputmode="numeric" oninput="calcularRitmo()">
+        <div class="marca-lbl">s</div>
+      </div>
+    </div>
+    <div class="row2" style="margin-top:12px;">
+      <div><label>Ritmo/km calculado</label><input type="text" id="f-ritmo" readonly placeholder="—"></div>
     </div>
     <div class="row2">
       <div><label>Hora salida oficial</label><input type="time" id="f-salida-oficial" step="1"></div>
@@ -190,57 +162,39 @@
     </div>
     <div id="diferencia-salida" class="alert alert-info" style="display:none;"></div>
   </div>
-
   <div class="card">
     <div class="card-title">📍 Puntos de encuentro</div>
-    <p class="text2" style="margin-bottom:12px;">KM y nombre de calle donde vas a ver al corredor. Se ordenan automáticamente de menor a mayor km.</p>
+    <p class="text2" style="margin-bottom:12px;">KM y nombre de calle donde vas a ver al corredor. Se ordenan automáticamente.</p>
     <div id="puntos-container"></div>
     <div style="display:flex;gap:8px;margin-top:12px;">
       <button class="btn btn-outline btn-sm" onclick="addPunto()">+ Añadir punto</button>
       <button class="btn btn-danger btn-sm" onclick="limpiarPuntos()">✕ Limpiar todos</button>
     </div>
   </div>
-
   <div style="display:flex;gap:10px;">
     <button class="btn btn-primary" style="flex:1;" onclick="guardarCorreder()">💾 Guardar corredor</button>
     <button class="btn btn-outline" onclick="showPage('lista')">Cancelar</button>
   </div>
 </div>
 
-<!-- ===== SEGUIMIENTO ===== -->
+<!-- SEGUIMIENTO -->
 <div id="page-seguimiento" class="page">
-
   <div class="alert-landscape landscape-hint">
     <span style="font-size:1.4rem;">📱↔️</span>
     <span>Para ver toda la información, gira el móvil en <b>horizontal</b></span>
   </div>
-
   <div class="page-header">
     <div class="page-header-left">
       <button class="btn btn-outline btn-sm" onclick="showPage('lista')">← Volver</button>
-      <div>
-        <h2 id="seg-nombre">Seguimiento</h2>
-        <p class="text2" id="seg-sub">—</p>
-      </div>
+      <div><h2 id="seg-nombre">Seguimiento</h2><p class="text2" id="seg-sub">—</p></div>
     </div>
     <div id="seg-reloj" style="font-size:1.1rem;font-weight:800;color:var(--primary);font-variant-numeric:tabular-nums;white-space:nowrap;"></div>
   </div>
-
   <div class="stats-row">
-    <div class="stat-box">
-      <div class="stat-val" id="stat-tc">—</div>
-      <div class="stat-label">Tiempo corriendo</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-val" id="stat-ra">—</div>
-      <div class="stat-label">Ritmo actual</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-val" id="stat-mp">—</div>
-      <div class="stat-label">Hora llegada meta</div>
-    </div>
+    <div class="stat-box"><div class="stat-val" id="stat-tc">—</div><div class="stat-label">Tiempo corriendo</div></div>
+    <div class="stat-box"><div class="stat-val" id="stat-ra">—</div><div class="stat-label">Ritmo actual</div></div>
+    <div class="stat-box"><div class="stat-val" id="stat-mp">—</div><div class="stat-label">Hora llegada meta</div></div>
   </div>
-
   <div class="card">
     <div class="card-title">📍 Puntos de encuentro — pulsa "¡Aquí!" cuando pase el corredor</div>
     <div style="overflow-x:auto;">
@@ -253,7 +207,6 @@
       </table>
     </div>
   </div>
-
   <div class="card" id="seg-meta-card" style="display:none;">
     <div class="card-title">🏁 Resultado Final</div>
     <div style="text-align:center;padding:12px 0;">
@@ -264,11 +217,10 @@
   </div>
 </div>
 
-<!-- ===== PRONÓSTICO ===== -->
+<!-- PRONOSTICO -->
 <div id="page-pronostico" class="page">
   <h2 style="margin-bottom:4px;">Pronóstico en Meta</h2>
   <p class="text2" style="margin-bottom:20px;">Introduce el km actual y el tiempo corriendo para calcular la llegada a meta</p>
-
   <div class="card">
     <div class="card-title">👤 Corredor (opcional)</div>
     <select id="prono-corredor" onchange="autoRellenarProno()">
@@ -276,25 +228,14 @@
     </select>
     <p class="text2" style="margin-top:8px;font-size:.77rem;">Si tiene seguimiento activo, se autorrellena con el último punto registrado.</p>
   </div>
-
   <div class="card">
     <div class="card-title">📊 Datos de paso</div>
     <div class="row3">
-      <div>
-        <label>Kilómetro actual</label>
-        <input type="number" id="prono-km" min="0.1" max="50" step="0.1" placeholder="Ej: 21" oninput="calcProno()">
-      </div>
-      <div>
-        <label>Tiempo corriendo (h:mm:ss)</label>
-        <input type="text" id="prono-t" placeholder="Ej: 1:45:30" inputmode="numeric" oninput="calcProno()">
-      </div>
-      <div>
-        <label>Distancia total (km)</label>
-        <input type="number" id="prono-dist" value="42.195" step="0.001" oninput="calcProno()">
-      </div>
+      <div><label>Kilómetro actual</label><input type="number" id="prono-km" min="0.1" max="50" step="0.1" oninput="calcProno()"></div>
+      <div><label>Tiempo corriendo (h:mm:ss)</label><input type="text" id="prono-t" placeholder="1:45:30" inputmode="numeric" oninput="calcProno()"></div>
+      <div><label>Distancia total (km)</label><input type="number" id="prono-dist" value="42.195" step="0.001" oninput="calcProno()"></div>
     </div>
   </div>
-
   <div id="prono-res" style="display:none;">
     <div class="prono-result">
       <div style="font-size:.85rem;opacity:.85;margin-bottom:8px;">⏱ Pronóstico de llegada a meta</div>
@@ -302,18 +243,9 @@
       <div style="font-size:.85rem;opacity:.8;margin-top:4px;">Tiempo total estimado</div>
       <div class="sep" style="background:rgba(255,255,255,0.25);"></div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;text-align:center;">
-        <div>
-          <div style="font-weight:800;font-size:1.1rem;" id="prono-rm">—</div>
-          <div style="font-size:.75rem;opacity:.8;">Ritmo medio/km</div>
-        </div>
-        <div>
-          <div style="font-weight:800;font-size:1.1rem;" id="prono-kr">—</div>
-          <div style="font-size:.75rem;opacity:.8;">KM restantes</div>
-        </div>
-        <div>
-          <div style="font-weight:800;font-size:1.1rem;" id="prono-hl">—</div>
-          <div style="font-size:.75rem;opacity:.8;">Hora llegada</div>
-        </div>
+        <div><div style="font-weight:800;font-size:1.1rem;" id="prono-rm">—</div><div style="font-size:.75rem;opacity:.8;">Ritmo medio/km</div></div>
+        <div><div style="font-weight:800;font-size:1.1rem;" id="prono-kr">—</div><div style="font-size:.75rem;opacity:.8;">KM restantes</div></div>
+        <div><div style="font-weight:800;font-size:1.1rem;" id="prono-hl">—</div><div style="font-size:.75rem;opacity:.8;">Hora llegada</div></div>
       </div>
     </div>
     <div id="prono-vs" class="card" style="margin-top:12px;text-align:center;display:none;">
@@ -324,9 +256,6 @@
 </div>
 
 <script>
-// ============================================================
-// CIUDADES CON CALLES
-// ============================================================
 const CIUDADES = {
   "Barcelona":{flag:"🇪🇸",puntos:[
     {km:5,calle:"Travessera de les Corts"},{km:6,calle:"Travessera de les Corts"},
@@ -465,57 +394,42 @@ const CIUDADES = {
     {km:7,calle:"Avenida de la Borbolla"},{km:8,calle:"Calle San Fernando"},
     {km:9,calle:"Avenida de la Constitución"},{km:10,calle:"Glorieta Carlos Cano"},
     {km:11,calle:"C. Virgen de Luján, 50"},{km:12,calle:"Gta. de los Marineros"},
-    {km:13,calle:"P.º de Cristóbal Colón, 23-21"},
-    {km:14,calle:"Estación Autobuses Plaza de Armas"},
-    {km:15,calle:"Calle Torneo 46"},
-    {km:16,calle:"Av. Concejal Alberto Jiménez-Becerril"},
-    {km:17,calle:"Av. Juventudes Musicales"},
-    {km:18,calle:"Ronda Urbana Norte"},
-    {km:19,calle:"Av. del Alcalde Manuel del Valle"},
-    {km:20,calle:"Ctra. de Carmona, 45A"},
-    {km:21,calle:"Ctra. de Carmona, 18"},
-    {km:22,calle:"C. Juan Antonio Cavestany"},
-    {km:23,calle:"Av. de Kansas City"},
-    {km:24,calle:"Av. de Kansas City 31-21"},
-    {km:25,calle:"C. de la Ada, 41007"},
-    {km:26,calle:"Av. de Andalucía, 1"},
-    {km:27,calle:"Av. de la Ciudad Jardín, 45-27"},
-    {km:28,calle:"Av. Alcalde Juan Fernandez"},
-    {km:29,calle:"Cardenal Bueno Monreal, 28-34"},
-    {km:30,calle:"Av. Manuel Siurot, 18-20"},
-    {km:31,calle:"Glorieta Plus Ultra, 1"},
-    {km:32,calle:"Av. de la Palmera, 42-46"},
-    {km:33,calle:"Av. de la Borbolla, 59"},
-    {km:34,calle:"Gta. San Diego"},
-    {km:35,calle:"C. Juan de Mata Carriazo 5"},
-    {km:36,calle:"C. Luis Montoto, 2-10"},
-    {km:37,calle:"Rda. de Capuchinos, 37-35"},
-    {km:38,calle:"Avenida de la Buharia"},
-    {km:39,calle:"Avenida Eduardo Dato"},
-    {km:40,calle:"C. Tetuán, 19, Casco Antiguo"},
+    {km:13,calle:"P.º de Cristóbal Colón, 23-21"},{km:14,calle:"Estación Autobuses Plaza de Armas"},
+    {km:15,calle:"Calle Torneo 46"},{km:16,calle:"Av. Concejal Alberto Jiménez-Becerril"},
+    {km:17,calle:"Av. Juventudes Musicales"},{km:18,calle:"Ronda Urbana Norte"},
+    {km:19,calle:"Av. del Alcalde Manuel del Valle"},{km:20,calle:"Ctra. de Carmona, 45A"},
+    {km:21,calle:"Ctra. de Carmona, 18"},{km:22,calle:"C. Juan Antonio Cavestany"},
+    {km:23,calle:"Av. de Kansas City"},{km:24,calle:"Av. de Kansas City 31-21"},
+    {km:25,calle:"C. de la Ada, 41007"},{km:26,calle:"Av. de Andalucía, 1"},
+    {km:27,calle:"Av. de la Ciudad Jardín, 45-27"},{km:28,calle:"Av. Alcalde Juan Fernandez"},
+    {km:29,calle:"Cardenal Bueno Monreal, 28-34"},{km:30,calle:"Av. Manuel Siurot, 18-20"},
+    {km:31,calle:"Glorieta Plus Ultra, 1"},{km:32,calle:"Av. de la Palmera, 42-46"},
+    {km:33,calle:"Av. de la Borbolla, 59"},{km:34,calle:"Gta. San Diego"},
+    {km:35,calle:"C. Juan de Mata Carriazo 5"},{km:36,calle:"C. Luis Montoto, 2-10"},
+    {km:37,calle:"Rda. de Capuchinos, 37-35"},{km:38,calle:"Avenida de la Buharia"},
+    {km:39,calle:"Avenida Eduardo Dato"},{km:40,calle:"C. Tetuán, 19, Casco Antiguo"},
     {km:42.195,calle:"META 🏁"}
   ]},
   "Málaga":{flag:"🇪🇸",puntos:[
-    {km:5,calle:"Paseo Marítimo Antonio Machado"},
-    {km:6,calle:"Zona del Puerto de Málaga"},{km:7,calle:"Parque de Huelin"},
-    {km:8,calle:"Paseo Marítimo de Poniente"},{km:9,calle:"Avenida de la Paloma"},
-    {km:10,calle:"Avenida de Europa"},{km:11,calle:"Avenida de Velázquez"},
-    {km:12,calle:"Parque del Oeste"},{km:13,calle:"Avenida de Molière"},
-    {km:14,calle:"Zona de Carretera de Cádiz"},{km:15,calle:"Avenida Ortega y Gasset"},
-    {km:16,calle:"Avenida de la Aurora"},{km:17,calle:"Teatinos"},
-    {km:18,calle:"Bulevar Louis Pasteur"},{km:19,calle:"Avenida Carlos Haya"},
-    {km:20,calle:"Hospital Carlos Haya"},{km:21,calle:"Avenida de Valle Inclán"},
-    {km:22,calle:"Avenida Santiago Ramón y Cajal"},{km:23,calle:"Avenida Emilio Thuillier"},
-    {km:24,calle:"Ciudad Jardín"},{km:25,calle:"Avenida de Barcelona"},
-    {km:26,calle:"Avenida Doctor Gálvez Ginachero"},{km:27,calle:"Avenida Rosaleda"},
-    {km:28,calle:"Avenida de Fátima"},{km:29,calle:"Calle Ferrándiz"},
-    {km:30,calle:"Calle Victoria"},{km:31,calle:"Plaza de la Merced"},
-    {km:32,calle:"Paseo de Reding"},{km:33,calle:"Paseo Marítimo Pablo Ruiz Picasso"},
-    {km:34,calle:"Baños del Carmen"},{km:35,calle:"Playa de Pedregalejo"},
-    {km:36,calle:"Playa del Palo"},{km:37,calle:"Paseo Marítimo de El Palo"},
-    {km:38,calle:"Paseo Marítimo Pablo Ruiz Picasso"},
-    {km:39,calle:"Paseo Marítimo Pablo Ruiz Picasso"},
-    {km:40,calle:"Paseo del Parque"},{km:42.195,calle:"META 🏁"}
+    {km:5,calle:"Paseo Marítimo Antonio Machado"},{km:6,calle:"Zona del Puerto de Málaga"},
+    {km:7,calle:"Parque de Huelin"},{km:8,calle:"Paseo Marítimo de Poniente"},
+    {km:9,calle:"Avenida de la Paloma"},{km:10,calle:"Avenida de Europa"},
+    {km:11,calle:"Avenida de Velázquez"},{km:12,calle:"Parque del Oeste"},
+    {km:13,calle:"Avenida de Molière"},{km:14,calle:"Zona de Carretera de Cádiz"},
+    {km:15,calle:"Avenida Ortega y Gasset"},{km:16,calle:"Avenida de la Aurora"},
+    {km:17,calle:"Teatinos"},{km:18,calle:"Bulevar Louis Pasteur"},
+    {km:19,calle:"Avenida Carlos Haya"},{km:20,calle:"Hospital Carlos Haya"},
+    {km:21,calle:"Avenida de Valle Inclán"},{km:22,calle:"Avenida Santiago Ramón y Cajal"},
+    {km:23,calle:"Avenida Emilio Thuillier"},{km:24,calle:"Ciudad Jardín"},
+    {km:25,calle:"Avenida de Barcelona"},{km:26,calle:"Avenida Doctor Gálvez Ginachero"},
+    {km:27,calle:"Avenida Rosaleda"},{km:28,calle:"Avenida de Fátima"},
+    {km:29,calle:"Calle Ferrándiz"},{km:30,calle:"Calle Victoria"},
+    {km:31,calle:"Plaza de la Merced"},{km:32,calle:"Paseo de Reding"},
+    {km:33,calle:"Paseo Marítimo Pablo Ruiz Picasso"},{km:34,calle:"Baños del Carmen"},
+    {km:35,calle:"Playa de Pedregalejo"},{km:36,calle:"Playa del Palo"},
+    {km:37,calle:"Paseo Marítimo de El Palo"},{km:38,calle:"Paseo Marítimo Pablo Ruiz Picasso"},
+    {km:39,calle:"Paseo Marítimo Pablo Ruiz Picasso"},{km:40,calle:"Paseo del Parque"},
+    {km:42.195,calle:"META 🏁"}
   ]},
   "Hamburgo":{flag:"🇩🇪",puntos:[
     {km:5,calle:"Elbchausee"},{km:6,calle:"Othmarschen"},{km:7,calle:"Hohenesch"},
@@ -538,23 +452,22 @@ const CIUDADES = {
     {km:40,calle:"Messehallen"},{km:42.195,calle:"META 🏁"}
   ]},
   "Tokio":{flag:"🇯🇵",puntos:[
-    {km:10,calle:"Hibiya / Chiyoda (35.7025, 139.7716)"},
-    {km:11,calle:"35.70406, 139.77195"},{km:12,calle:"35.69515, 139.77040"},
-    {km:13,calle:"35.68733, 139.77377"},{km:14,calle:"35.68665, 139.77920"},
-    {km:15,calle:"35.68565, 139.78758"},{km:16,calle:"35.69331, 139.78495"},
-    {km:17,calle:"35.70151, 139.78908"},{km:18,calle:"35.70858, 139.79585"},
-    {km:19,calle:"35.70566, 139.79382"},{km:20,calle:"35.70089, 139.79371"},
-    {km:21,calle:"35.69409, 139.79771"},{km:22,calle:"35.68508, 139.79853"},
-    {km:23,calle:"35.67662, 139.79680"},{km:24,calle:"35.67051, 139.79912"},
-    {km:25,calle:"35.67713, 139.79706"},{km:26,calle:"35.68564, 139.79839"},
-    {km:27,calle:"35.69464, 139.79757"},{km:28,calle:"35.70108, 139.79294"},
-    {km:29,calle:"35.69627, 139.78574"},{km:30,calle:"35.68774, 139.78662"},
-    {km:31,calle:"35.68199, 139.78153"},{km:32,calle:"35.68157, 139.77317"},
-    {km:33,calle:"35.67378, 139.76765"},{km:34,calle:"35.67461, 139.75939"},
-    {km:35,calle:"35.66670, 139.75420"},{km:36,calle:"35.65821, 139.75051"},
-    {km:37,calle:"35.64926, 139.74906"},{km:38,calle:"35.64926, 139.74895"},
-    {km:39,calle:"35.65821, 139.75040"},{km:40,calle:"35.66672, 139.75407"},
-    {km:42.195,calle:"META 🏁"}
+    {km:10,calle:"Hibiya / Chiyoda"},{km:11,calle:"35.70406, 139.77195"},
+    {km:12,calle:"35.69515, 139.77040"},{km:13,calle:"35.68733, 139.77377"},
+    {km:14,calle:"35.68665, 139.77920"},{km:15,calle:"35.68565, 139.78758"},
+    {km:16,calle:"35.69331, 139.78495"},{km:17,calle:"35.70151, 139.78908"},
+    {km:18,calle:"35.70858, 139.79585"},{km:19,calle:"35.70566, 139.79382"},
+    {km:20,calle:"35.70089, 139.79371"},{km:21,calle:"35.69409, 139.79771"},
+    {km:22,calle:"35.68508, 139.79853"},{km:23,calle:"35.67662, 139.79680"},
+    {km:24,calle:"35.67051, 139.79912"},{km:25,calle:"35.67713, 139.79706"},
+    {km:26,calle:"35.68564, 139.79839"},{km:27,calle:"35.69464, 139.79757"},
+    {km:28,calle:"35.70108, 139.79294"},{km:29,calle:"35.69627, 139.78574"},
+    {km:30,calle:"35.68774, 139.78662"},{km:31,calle:"35.68199, 139.78153"},
+    {km:32,calle:"35.68157, 139.77317"},{km:33,calle:"35.67378, 139.76765"},
+    {km:34,calle:"35.67461, 139.75939"},{km:35,calle:"35.66670, 139.75420"},
+    {km:36,calle:"35.65821, 139.75051"},{km:37,calle:"35.64926, 139.74906"},
+    {km:38,calle:"35.64926, 139.74895"},{km:39,calle:"35.65821, 139.75040"},
+    {km:40,calle:"35.66672, 139.75407"},{km:42.195,calle:"META 🏁"}
   ]},
   "Nueva York":{flag:"🇺🇸",puntos:[
     {km:10,calle:"Fourth Ave. - 19th St"},{km:11,calle:"Fourth Ave. - 11th St"},
@@ -577,386 +490,304 @@ const CIUDADES = {
   ]}
 };
 
-const KM = 42.195;
-let C = JSON.parse(localStorage.getItem('mt_v5') || '[]');
-let ca = null, timerSeg = null, pt = [], ciudadSel = null;
-
-function sv() { localStorage.setItem('mt_v5', JSON.stringify(C)); }
-function pad(n) { return String(Math.floor(Math.abs(n))).padStart(2,'0'); }
-
-function ph(s) {
-  if (!s) return null;
-  const p = s.trim().split(':').map(Number);
-  if (p.some(isNaN)) return null;
-  if (p.length===3) return p[0]*3600+p[1]*60+p[2];
-  if (p.length===2) return p[0]*3600+p[1]*60;
+const KM=42.195;
+let C=JSON.parse(localStorage.getItem('mt_v5_es')||'[]');
+let ca=null,timerSeg=null,pt=[],ciudadSel=null;
+function sv(){localStorage.setItem('mt_v5_es',JSON.stringify(C));}
+function pad(n){return String(Math.floor(Math.abs(n))).padStart(2,'0');}
+function ph(s){
+  if(!s)return null;
+  const p=s.trim().split(':').map(Number);
+  if(p.some(isNaN))return null;
+  if(p.length===3)return p[0]*3600+p[1]*60+p[2];
+  if(p.length===2)return p[0]*3600+p[1]*60;
   return null;
 }
-function fh(s) { s=Math.round(Math.abs(s)); return `${Math.floor(s/3600)}:${pad((s%3600)/60)}:${pad(s%60)}`; }
-function fm(s) { s=Math.round(Math.abs(s)); return `${Math.floor(s/60)}:${pad(s%60)}`; }
-function t2s(t) {
-  if (!t) return 0;
-  const p = t.split(':').map(Number);
-  if (p.length===3) return p[0]*3600+p[1]*60+p[2];
-  if (p.length===2) return p[0]*3600+p[1]*60;
-  return 0;
+function getMarca(){
+  const h=parseInt(document.getElementById('f-marca-h').value)||0;
+  const m=parseInt(document.getElementById('f-marca-m').value)||0;
+  const s=parseInt(document.getElementById('f-marca-s').value)||0;
+  if(h===0&&m===0&&s===0)return'';
+  return h+':'+pad(m)+':'+pad(s);
 }
-function s2t(s) {
-  s = ((Math.round(s) % 86400) + 86400) % 86400;
-  return `${pad(s/3600)}:${pad((s%3600)/60)}:${pad(s%60)}`;
+function getMarcaSecs(){
+  const h=parseInt(document.getElementById('f-marca-h').value)||0;
+  const m=parseInt(document.getElementById('f-marca-m').value)||0;
+  const s=parseInt(document.getElementById('f-marca-s').value)||0;
+  const total=h*3600+m*60+s;
+  return total>0?total:null;
 }
+function setMarca(str){
+  if(!str){document.getElementById('f-marca-h').value='';document.getElementById('f-marca-m').value='';document.getElementById('f-marca-s').value='';return;}
+  const p=str.split(':').map(Number);
+  if(p.length===3){document.getElementById('f-marca-h').value=p[0];document.getElementById('f-marca-m').value=pad(p[1]);document.getElementById('f-marca-s').value=pad(p[2]);}
+}
+function fh(s){s=Math.round(Math.abs(s));return Math.floor(s/3600)+':'+pad((s%3600)/60)+':'+pad(s%60);}
+function fm(s){s=Math.round(Math.abs(s));return Math.floor(s/60)+':'+pad(s%60);}
+function t2s(t){if(!t)return 0;const p=t.split(':').map(Number);if(p.length===3)return p[0]*3600+p[1]*60+p[2];if(p.length===2)return p[0]*3600+p[1]*60;return 0;}
+function s2t(s){s=((Math.round(s)%86400)+86400)%86400;return pad(s/3600)+':'+pad((s%3600)/60)+':'+pad(s%60);}
 
-// ---- NAVEGACIÓN ----
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
-  const m = {lista:0,ficha:1,seguimiento:2,pronostico:3};
-  if (m[id] !== undefined) document.querySelectorAll('.nav-btn')[m[id]].classList.add('active');
-  if (id==='lista') rL();
-  if (id==='pronostico') { rPS(); calcProno(); }
+  const m={lista:0,ficha:1,seguimiento:2,pronostico:3};
+  if(m[id]!==undefined)document.querySelectorAll('.nav-btn')[m[id]].classList.add('active');
+  if(id==='lista')rL();
+  if(id==='pronostico'){rPS();calcProno();}
 }
 
-// ---- CITY GRID ----
-function buildCityGrid() {
-  const g = document.getElementById('city-grid');
-  g.innerHTML = Object.entries(CIUDADES).map(([name, d]) =>
-    `<div class="city-btn" id="cbtn-${name}" onclick="selCiudad('${name}')">
-      <span class="city-flag">${d.flag}</span>${name}
-    </div>`
+function buildCityGrid(){
+  const g=document.getElementById('city-grid');
+  g.innerHTML=Object.entries(CIUDADES).map(([name,d])=>
+    `<div class="city-btn" id="cbtn-${name}" onclick="selCiudad('${name}')">`+
+    `<span class="city-flag">${d.flag}</span>${name}</div>`
   ).join('');
-  if (ciudadSel) {
-    const b = document.getElementById('cbtn-'+ciudadSel);
-    if (b) b.classList.add('sel');
-  }
+  if(ciudadSel){const b=document.getElementById('cbtn-'+ciudadSel);if(b)b.classList.add('sel');}
 }
 
-function selCiudad(name) {
-  ciudadSel = name;
-  document.querySelectorAll('.city-btn').forEach(b => b.classList.remove('sel'));
-  const btn = document.getElementById('cbtn-'+name);
-  if (btn) btn.classList.add('sel');
-  const fc = document.getElementById('f-carrera');
-  if (!fc.value || Object.keys(CIUDADES).some(c => fc.value.includes(c))) {
-    fc.value = 'Maratón de ' + name + ' 2025';
-  }
-  pt = CIUDADES[name].puntos.map(p => ({km:p.km, calle:p.calle}));
+function selCiudad(name){
+  ciudadSel=name;
+  document.querySelectorAll('.city-btn').forEach(b=>b.classList.remove('sel'));
+  const btn=document.getElementById('cbtn-'+name);if(btn)btn.classList.add('sel');
+  const fc=document.getElementById('f-carrera');
+  if(!fc.value||Object.keys(CIUDADES).some(c=>fc.value.includes(c)))
+    fc.value='Maratón de '+name+' 2025';
+  pt=CIUDADES[name].puntos.map(p=>({km:p.km,calle:p.calle}));
   rPF();
 }
 
-// ---- LISTA ----
-function rL() {
-  const el = document.getElementById('lista-corredores');
-  if (!C.length) {
-    el.innerHTML = `<div class="empty"><div class="empty-icon">🏃</div><p>No tienes corredores todavía.<br>Pulsa <b>"+ Nuevo corredor"</b> para empezar.</p></div>`;
-    return;
-  }
-  el.innerHTML = C.map((c,i) => {
-    const p = (c.pasos||[]).filter(x=>x.horaReal).length;
-    const t = (c.pasos||[]).length;
-    const b = p===0
-      ? `<span class="badge badge-yellow">Sin empezar</span>`
-      : p>=t ? `<span class="badge badge-green">Finalizado ✓</span>`
-      : `<span class="badge badge-red">En carrera · ${p}/${t} puntos</span>`;
-    const flag = c.ciudad && CIUDADES[c.ciudad] ? CIUDADES[c.ciudad].flag+' ' : '🏙️ ';
-    return `<div class="runner-item">
-      <div class="runner-avatar">${c.nombre.charAt(0).toUpperCase()}</div>
-      <div class="runner-info">
-        <div class="runner-name">${c.nombre}${c.dorsal ? ` <span style="color:var(--text2);font-size:.8rem;">#${c.dorsal}</span>` : ''}</div>
-        <div class="runner-sub">${flag}${c.carrera||'Sin carrera'} · Marca: ${c.marca||'—'} · ${c.ritmo||'—'}/km</div>
-        <div style="margin-top:5px;">${b}</div>
-      </div>
-      <div class="runner-actions">
-        <button class="btn btn-outline btn-sm" onclick="eC(${i})">✏️ Editar</button>
-        <button class="btn btn-primary btn-sm" onclick="aS(${i})">📍 Seguir</button>
-        <button class="btn btn-danger btn-sm" onclick="bC(${i})">🗑</button>
-      </div>
-    </div>`;
+function rL(){
+  const el=document.getElementById('lista-corredores');
+  if(!C.length){el.innerHTML='<div class="empty"><div class="empty-icon">🏃</div><p>No tienes corredores todavía.<br>Pulsa <b>"+ Nuevo corredor"</b> para empezar.</p></div>';return;}
+  el.innerHTML=C.map((c,i)=>{
+    const p=(c.pasos||[]).filter(x=>x.horaReal).length,tt=(c.pasos||[]).length;
+    const b=p===0?'<span class="badge badge-yellow">Sin empezar</span>':
+             p>=tt?'<span class="badge badge-green">Finalizado ✓</span>':
+             '<span class="badge badge-red">En carrera · '+p+'/'+tt+'</span>';
+    const flag=c.ciudad&&CIUDADES[c.ciudad]?CIUDADES[c.ciudad].flag+' ':'🏙️ ';
+    return '<div class="runner-item">'+
+      '<div class="runner-avatar">'+c.nombre.charAt(0).toUpperCase()+'</div>'+
+      '<div class="runner-info">'+
+        '<div class="runner-name">'+c.nombre+(c.dorsal?' <span style="color:var(--text2);font-size:.8rem;">#'+c.dorsal+'</span>':'')+'</div>'+
+        '<div class="runner-sub">'+flag+(c.carrera||'—')+' · Marca: '+(c.marca||'—')+' · '+(c.ritmo||'—')+'/km</div>'+
+        '<div style="margin-top:5px;">'+b+'</div>'+
+      '</div>'+
+      '<div class="runner-actions">'+
+        '<button class="btn btn-outline btn-sm" onclick="eC('+i+')">✏️ Editar</button>'+
+        '<button class="btn btn-primary btn-sm" onclick="aS('+i+')">📍 Seguir</button>'+
+        '<button class="btn btn-danger btn-sm" onclick="bC('+i+')">🗑</button>'+
+      '</div></div>';
   }).join('');
 }
 
-function bC(i) {
-  if (confirm(`¿Eliminar a "${C[i].nombre}"?`)) { C.splice(i,1); sv(); rL(); }
+function bC(i){if(confirm('¿Eliminar a "'+C[i].nombre+'"?')){C.splice(i,1);sv();rL();}}
+
+function nuevoCorreder(){
+  ca=null;ciudadSel=null;
+  ['f-nombre','f-dorsal','f-carrera','f-ritmo','f-salida-oficial','f-salida-personal'].forEach(id=>document.getElementById(id).value='');
+  setMarca('');
+  document.getElementById('f-sexo').value='';
+  document.getElementById('diferencia-salida').style.display='none';
+  document.getElementById('ficha-titulo').textContent='Nuevo Corredor';
+  pt=[];buildCityGrid();rPF();showPage('ficha');
 }
 
-// ---- FICHA ----
-function nuevoCorreder() {
-  ca = null; ciudadSel = null;
-  ['f-nombre','f-dorsal','f-carrera','f-marca','f-ritmo','f-salida-oficial','f-salida-personal']
-    .forEach(id => document.getElementById(id).value = '');
-  document.getElementById('f-sexo').value = '';
-  document.getElementById('diferencia-salida').style.display = 'none';
-  document.getElementById('ficha-titulo').textContent = 'Nuevo Corredor';
-  pt = [];
-  buildCityGrid();
-  rPF();
-  showPage('ficha');
+function eC(i){
+  ca=i;const c=C[i];
+  document.getElementById('f-nombre').value=c.nombre||'';
+  document.getElementById('f-dorsal').value=c.dorsal||'';
+  document.getElementById('f-sexo').value=c.sexo||'';
+  document.getElementById('f-carrera').value=c.carrera||'';
+  setMarca(c.marca||'');
+  document.getElementById('f-ritmo').value=c.ritmo||'';
+  document.getElementById('f-salida-oficial').value=c.salidaOficial||'';
+  document.getElementById('f-salida-personal').value=c.salidaPersonal||'';
+  document.getElementById('diferencia-salida').style.display='none';
+  document.getElementById('ficha-titulo').textContent=c.nombre;
+  ciudadSel=c.ciudad||null;
+  pt=(c.pasos||[]).map(p=>({km:p.km,calle:p.calle}));
+  buildCityGrid();rPF();showPage('ficha');
 }
 
-function eC(i) {
-  ca = i; const c = C[i];
-  document.getElementById('f-nombre').value = c.nombre||'';
-  document.getElementById('f-dorsal').value = c.dorsal||'';
-  document.getElementById('f-sexo').value = c.sexo||'';
-  document.getElementById('f-carrera').value = c.carrera||'';
-  document.getElementById('f-marca').value = c.marca||'';
-  document.getElementById('f-ritmo').value = c.ritmo||'';
-  document.getElementById('f-salida-oficial').value = c.salidaOficial||'';
-  document.getElementById('f-salida-personal').value = c.salidaPersonal||'';
-  document.getElementById('diferencia-salida').style.display = 'none';
-  document.getElementById('ficha-titulo').textContent = 'Editar: ' + c.nombre;
-  ciudadSel = c.ciudad||null;
-  pt = (c.pasos||[]).map(p => ({km:p.km, calle:p.calle}));
-  buildCityGrid();
-  rPF();
-  showPage('ficha');
-}
-
-function rPF() {
-  // Ordenar por km antes de renderizar
-  pt.sort((a,b) => (parseFloat(a.km)||0) - (parseFloat(b.km)||0));
-  document.getElementById('puntos-container').innerHTML = pt.map((p,i) =>
-    `<div class="punto-row">
-      <input type="number" placeholder="KM" value="${p.km}" step="0.001" min="0" max="50"
-        onchange="pt[${i}].km=parseFloat(this.value)||0; ordenarYRenderizar()">
-      <input type="text" placeholder="Nombre / Calle" value="${p.calle||''}"
-        oninput="pt[${i}].calle=this.value">
-      <button class="btn btn-danger btn-sm" onclick="rP(${i})">✕</button>
-    </div>`
+function rPF(){
+  pt.sort((a,b)=>(parseFloat(a.km)||0)-(parseFloat(b.km)||0));
+  document.getElementById('puntos-container').innerHTML=pt.map((p,i)=>
+    '<div class="punto-row">'+
+    '<input type="number" placeholder="KM" value="'+p.km+'" step="0.001" onchange="pt['+i+'].km=parseFloat(this.value)||0;ordenarYRenderizar()">'+
+    '<input type="text" placeholder="Nombre / Calle" value="'+(p.calle||'')+'" oninput="pt['+i+'].calle=this.value">'+
+    '<button class="btn btn-danger btn-sm" onclick="rP('+i+')">✕</button>'+
+    '</div>'
   ).join('');
 }
+function ordenarYRenderizar(){pt.sort((a,b)=>(parseFloat(a.km)||0)-(parseFloat(b.km)||0));rPF();}
+function addPunto(){pt.push({km:'',calle:''});rPF();}
+function rP(i){pt.splice(i,1);rPF();}
+function limpiarPuntos(){if(confirm('¿Limpiar todos los puntos de encuentro?')){pt=[];rPF();}}
 
-function ordenarYRenderizar() {
-  pt.sort((a,b) => (parseFloat(a.km)||0) - (parseFloat(b.km)||0));
-  rPF();
+function calcularRitmo(){
+  const s=getMarcaSecs();
+  document.getElementById('f-ritmo').value=s?fm(s/KM):'';
+}
+function syncSalida(){
+  const p=document.getElementById('f-salida-personal').value;
+  const o=document.getElementById('f-salida-oficial').value;
+  const el=document.getElementById('diferencia-salida');
+  if(!p)return;
+  document.getElementById('f-salida-oficial').value=p;
+  if(o&&o!==p){
+    const d=t2s(p)-t2s(o);
+    el.style.display='block';
+    el.textContent=Math.abs(d)+'s '+(d>0?'más tarde':'antes')+' — Hora oficial actualizada al tiempo de chip.';
+  }else el.style.display='none';
 }
 
-function addPunto() { pt.push({km:'',calle:''}); rPF(); }
-function rP(i) { pt.splice(i,1); rPF(); }
-function limpiarPuntos() { if(confirm('¿Limpiar todos los puntos de encuentro?')) { pt=[]; rPF(); } }
-
-function calcularRitmo() {
-  const s = ph(document.getElementById('f-marca').value);
-  document.getElementById('f-ritmo').value = s ? fm(s/KM) : '';
+function guardarCorreder(){
+  const n=document.getElementById('f-nombre').value.trim();
+  if(!n){alert('El nombre es obligatorio');return;}
+  const marca=getMarca(),ms=getMarcaSecs(),rs=ms?ms/KM:null;
+  const so=document.getElementById('f-salida-oficial').value;
+  const pasos=pt.filter(p=>p.km>0).sort((a,b)=>parseFloat(a.km)-parseFloat(b.km)).map(p=>{
+    let hp='';if(rs&&so)hp=s2t(t2s(so)+rs*p.km);
+    return{km:parseFloat(p.km),calle:p.calle||'KM '+p.km,horaPrevista:hp,horaReal:'',horaRealSecs:null};
+  });
+  const corredor={nombre:n,dorsal:document.getElementById('f-dorsal').value,
+    sexo:document.getElementById('f-sexo').value,
+    carrera:document.getElementById('f-carrera').value.trim(),
+    ciudad:ciudadSel,marca,ritmo:rs?fm(rs):'',
+    salidaOficial:so,salidaPersonal:document.getElementById('f-salida-personal').value,pasos};
+  if(ca!==null){
+    const v=C[ca].pasos||[];
+    corredor.pasos=corredor.pasos.map(p=>{const x=v.find(y=>y.km===p.km);if(x&&x.horaReal){p.horaReal=x.horaReal;p.horaRealSecs=x.horaRealSecs;}return p;});
+    C[ca]=corredor;
+  }else{if(C.length>=5){alert('Máximo 5 corredores');return;}C.push(corredor);}
+  sv();showPage('lista');
 }
 
-function syncSalida() {
-  const p = document.getElementById('f-salida-personal').value;
-  const o = document.getElementById('f-salida-oficial').value;
-  const el = document.getElementById('diferencia-salida');
-  if (!p) return;
-  document.getElementById('f-salida-oficial').value = p;
-  if (o && o !== p) {
-    const d = t2s(p) - t2s(o);
-    el.style.display = 'block';
-    el.textContent = `Salida personal ${Math.abs(d)}s ${d>0?'más tarde':'antes'} que la oficial. Hora oficial actualizada al tiempo de chip.`;
-  } else { el.style.display = 'none'; }
+function aS(i){
+  ca=i;const c=C[i];
+  document.getElementById('seg-nombre').textContent=c.nombre+(c.dorsal?' #'+c.dorsal:'');
+  const flag=c.ciudad&&CIUDADES[c.ciudad]?CIUDADES[c.ciudad].flag+' ':'';
+  document.getElementById('seg-sub').textContent=flag+(c.carrera||'')+' · Marca: '+(c.marca||'—')+' ('+(c.ritmo||'—')+'/km)';
+  rS();showPage('seguimiento');
+  clearInterval(timerSeg);timerSeg=setInterval(tick,1000);tick();
 }
 
-function guardarCorreder() {
-  const n = document.getElementById('f-nombre').value.trim();
-  if (!n) { alert('El nombre es obligatorio'); return; }
-  const marca = document.getElementById('f-marca').value.trim();
-  const ms = ph(marca), rs = ms ? ms/KM : null;
-  const so = document.getElementById('f-salida-oficial').value;
-
-  // Ordenar y filtrar puntos válidos
-  const pasosOrdenados = pt
-    .filter(p => p.km > 0)
-    .sort((a,b) => parseFloat(a.km) - parseFloat(b.km))
-    .map(p => {
-      let hp = '';
-      if (rs && so) hp = s2t(t2s(so) + rs * p.km);
-      return { km: parseFloat(p.km), calle: p.calle||`KM ${p.km}`, horaPrevista: hp, horaReal: '', horaRealSecs: null };
-    });
-
-  const corredor = {
-    nombre: n,
-    dorsal: document.getElementById('f-dorsal').value,
-    sexo: document.getElementById('f-sexo').value,
-    carrera: document.getElementById('f-carrera').value.trim(),
-    ciudad: ciudadSel,
-    marca, ritmo: rs ? fm(rs) : '',
-    salidaOficial: so,
-    salidaPersonal: document.getElementById('f-salida-personal').value,
-    pasos: pasosOrdenados
-  };
-
-  if (ca !== null) {
-    const v = C[ca].pasos||[];
-    corredor.pasos = corredor.pasos.map(p => {
-      const x = v.find(y => y.km === p.km);
-      if (x && x.horaReal) { p.horaReal = x.horaReal; p.horaRealSecs = x.horaRealSecs; }
-      return p;
-    });
-    C[ca] = corredor;
-  } else {
-    if (C.length >= 5) { alert('Máximo 5 corredores'); return; }
-    C.push(corredor);
-  }
-  sv(); showPage('lista');
-}
-
-// ---- SEGUIMIENTO ----
-function aS(i) {
-  ca = i; const c = C[i];
-  document.getElementById('seg-nombre').textContent = c.nombre + (c.dorsal ? ` #${c.dorsal}` : '');
-  const flag = c.ciudad && CIUDADES[c.ciudad] ? CIUDADES[c.ciudad].flag + ' ' : '';
-  document.getElementById('seg-sub').textContent = `${flag}${c.carrera||''} · Marca: ${c.marca||'—'} (${c.ritmo||'—'}/km)`;
-  rS();
-  showPage('seguimiento');
-  clearInterval(timerSeg);
-  timerSeg = setInterval(tick, 1000);
-  tick();
-}
-
-function tick() {
-  const c = C[ca], reloj = document.getElementById('seg-reloj'), ahora = new Date();
-  if (!c.salidaOficial) { reloj.textContent = ahora.toLocaleTimeString('es-ES'); return; }
-  const sd = new Date();
-  const [h,m,s] = c.salidaOficial.split(':').map(Number);
-  sd.setHours(h, m, s||0, 0);
-  const diff = Math.floor((ahora - sd) / 1000);
-  if (diff < 0) { reloj.textContent = '⏳ Salida en ' + fh(-diff); return; }
-
-  const tiempoCorriendo = diff;
-  reloj.textContent = '⏱ ' + fh(tiempoCorriendo);
-  document.getElementById('stat-tc').textContent = fh(tiempoCorriendo);
-
-  // Calcular hora llegada meta según ritmo actual (desde último punto) o marca objetivo
-  const pasos = c.pasos||[];
-  const conHora = pasos.filter(p => p.horaRealSecs != null);
-  if (conHora.length > 0) {
-    const ultimo = conHora[conHora.length-1];
-    const tc = ultimo.horaRealSecs - t2s(c.salidaOficial);
-    if (tc > 0 && ultimo.km > 0) {
-      const ritmoActual = tc / ultimo.km;
-      const tiempoTotalEstimado = ritmoActual * KM;
-      const horaLlegada = s2t(t2s(c.salidaOficial) + tiempoTotalEstimado);
-      document.getElementById('stat-mp').textContent = horaLlegada;
-      document.getElementById('stat-ra').textContent = fm(ritmoActual) + '/km';
+function tick(){
+  const c=C[ca],reloj=document.getElementById('seg-reloj'),ahora=new Date();
+  if(!c.salidaOficial){reloj.textContent=ahora.toLocaleTimeString();return;}
+  const sd=new Date();const[h,m,s]=c.salidaOficial.split(':').map(Number);sd.setHours(h,m,s||0,0);
+  const diff=Math.floor((ahora-sd)/1000);
+  if(diff<0){reloj.textContent='⏳ Salida en '+fh(-diff);return;}
+  reloj.textContent='⏱ '+fh(diff);
+  document.getElementById('stat-tc').textContent=fh(diff);
+  const pasos=c.pasos||[],conHora=pasos.filter(p=>p.horaRealSecs!=null);
+  if(conHora.length>0){
+    const u=conHora[conHora.length-1],tc=u.horaRealSecs-t2s(c.salidaOficial);
+    if(tc>0&&u.km>0){
+      const r=tc/u.km;
+      document.getElementById('stat-ra').textContent=fm(r)+'/km';
+      document.getElementById('stat-mp').textContent=s2t(t2s(c.salidaOficial)+r*KM);
     }
-  } else {
-    // Sin puntos registrados: usar marca objetivo
-    const ms = ph(c.marca);
-    if (ms) {
-      document.getElementById('stat-mp').textContent = s2t(t2s(c.salidaOficial) + ms);
-    }
-    document.getElementById('stat-ra').textContent = c.ritmo ? c.ritmo+'/km' : '—';
+  }else{
+    const ms=ph(c.marca);
+    if(ms)document.getElementById('stat-mp').textContent=s2t(t2s(c.salidaOficial)+ms);
+    document.getElementById('stat-ra').textContent=c.ritmo?c.ritmo+'/km':'—';
   }
 }
 
-function rS() {
-  const c = C[ca], pasos = c.pasos||[], tbody = document.getElementById('seg-tabla');
-
-  tbody.innerHTML = pasos.map((p,i) => {
-    const passed = !!p.horaReal;
-    const isNext = !passed && (i===0 || pasos[i-1].horaReal);
-    let dh = '—';
-    if (passed && p.horaPrevista) {
-      const d = p.horaRealSecs - t2s(p.horaPrevista);
-      if (Math.abs(d) <= 10) dh = `<span class="badge badge-green">En tiempo</span>`;
-      else if (d > 0)         dh = `<span class="badge badge-red">+${fm(d)}</span>`;
-      else                    dh = `<span class="badge badge-green">-${fm(-d)}</span>`;
+function rS(){
+  const c=C[ca],pasos=c.pasos||[],tbody=document.getElementById('seg-tabla');
+  tbody.innerHTML=pasos.map((p,i)=>{
+    const ps=!!p.horaReal,nx=!ps&&(i===0||pasos[i-1].horaReal);
+    let dh='—';
+    if(ps&&p.horaPrevista){
+      const d=p.horaRealSecs-t2s(p.horaPrevista);
+      if(Math.abs(d)<=10)dh='<span class="badge badge-green">En tiempo</span>';
+      else if(d>0)dh='<span class="badge badge-red">+'+fm(d)+'</span>';
+      else dh='<span class="badge badge-green">-'+fm(-d)+'</span>';
     }
-    const rc = passed ? 'km-passed' : (isNext ? 'km-next' : '');
-    return `<tr class="${rc}">
-      <td><b>${p.calle}</b></td>
-      <td>${p.km%1===0 ? p.km : p.km.toFixed(3)}</td>
-      <td style="font-variant-numeric:tabular-nums;">${p.horaPrevista||'—'}</td>
-      <td style="font-variant-numeric:tabular-nums;color:${passed?'var(--green)':'var(--text2)'};font-weight:${passed?700:400};">${p.horaReal||'—'}</td>
-      <td>${dh}</td>
-      <td>${passed
-        ? `<button class="btn btn-outline btn-sm" onclick="resP(${i})" title="Deshacer este y siguientes">↩ Deshacer</button>`
-        : `<button class="btn btn-green btn-sm" onclick="regP(${i})">📍 ¡Aquí!</button>`
-      }</td>
-    </tr>`;
+    const rc=ps?'km-passed':(nx?'km-next':'');
+    return '<tr class="'+rc+'">'+
+      '<td><b>'+p.calle+'</b></td>'+
+      '<td>'+(p.km%1===0?p.km:p.km.toFixed(3))+'</td>'+
+      '<td style="font-variant-numeric:tabular-nums;">'+(p.horaPrevista||'—')+'</td>'+
+      '<td style="font-variant-numeric:tabular-nums;color:'+(ps?'var(--green)':'var(--text2)')+';font-weight:'+(ps?700:400)+';">'+(p.horaReal||'—')+'</td>'+
+      '<td>'+dh+'</td>'+
+      '<td>'+(ps?'<button class="btn btn-outline btn-sm" onclick="resP('+i+')">↩ Deshacer</button>':
+                '<button class="btn btn-green btn-sm" onclick="regP('+i+')">📍 ¡Aquí!</button>')+
+      '</td></tr>';
   }).join('');
-
-  // Resultado final meta
-  const mp = pasos.find(p => p.km >= 42 && p.horaReal);
-  const mc = document.getElementById('seg-meta-card');
-  if (mp && c.salidaOficial) {
-    const tf = mp.horaRealSecs - t2s(c.salidaOficial);
-    mc.style.display = 'block';
-    document.getElementById('seg-meta-t').textContent = fh(tf);
-    const ms = ph(c.marca);
-    if (ms) {
-      const d = tf - ms, eldif = document.getElementById('seg-meta-d');
-      if (Math.abs(d)<=30) eldif.innerHTML=`<span class="badge badge-green">🎯 ¡En marca! ${c.marca}</span>`;
-      else if (d>0) eldif.innerHTML=`<span class="badge badge-red">+${fh(d)} sobre la marca objetivo</span>`;
-      else eldif.innerHTML=`<span class="badge badge-green">🎉 ${fh(-d)} bajo la marca objetivo</span>`;
+  const mp=pasos.find(p=>p.km>=42&&p.horaReal),mc=document.getElementById('seg-meta-card');
+  if(mp&&c.salidaOficial){
+    const tf=mp.horaRealSecs-t2s(c.salidaOficial);
+    mc.style.display='block';document.getElementById('seg-meta-t').textContent=fh(tf);
+    const ms=ph(c.marca);
+    if(ms){
+      const d=tf-ms,el=document.getElementById('seg-meta-d');
+      if(Math.abs(d)<=30)el.innerHTML='<span class="badge badge-green">🎯 ¡En marca! '+c.marca+'</span>';
+      else if(d>0)el.innerHTML='<span class="badge badge-red">+'+fh(d)+' sobre la marca objetivo</span>';
+      else el.innerHTML='<span class="badge badge-green">🎉 '+fh(-d)+' bajo la marca objetivo</span>';
     }
-  } else { mc.style.display = 'none'; }
+  }else mc.style.display='none';
 }
 
-function regP(i) {
-  const ahora = new Date(), c = C[ca];
-  c.pasos[i].horaReal = ahora.toTimeString().substring(0,8);
-  c.pasos[i].horaRealSecs = ahora.getHours()*3600 + ahora.getMinutes()*60 + ahora.getSeconds();
-  sv(); rS();
+function regP(i){
+  const a=new Date(),c=C[ca];
+  c.pasos[i].horaReal=a.toTimeString().substring(0,8);
+  c.pasos[i].horaRealSecs=a.getHours()*3600+a.getMinutes()*60+a.getSeconds();
+  sv();rS();
+}
+function resP(i){
+  const c=C[ca];
+  for(let j=i;j<c.pasos.length;j++){c.pasos[j].horaReal='';c.pasos[j].horaRealSecs=null;}
+  sv();rS();
 }
 
-function resP(i) {
-  const c = C[ca];
-  for (let j=i; j<c.pasos.length; j++) { c.pasos[j].horaReal=''; c.pasos[j].horaRealSecs=null; }
-  sv(); rS();
+function rPS(){
+  const s=document.getElementById('prono-corredor');
+  s.innerHTML='<option value="">— Sin corredor seleccionado —</option>'+
+    C.map((c,i)=>'<option value="'+i+'">'+c.nombre+(c.dorsal?' #'+c.dorsal:'')+(c.carrera?' — '+c.carrera:'')+'</option>').join('');
 }
-
-// ---- PRONÓSTICO ----
-function rPS() {
-  const s = document.getElementById('prono-corredor');
-  s.innerHTML = '<option value="">— Sin corredor seleccionado —</option>' +
-    C.map((c,i) => `<option value="${i}">${c.nombre}${c.dorsal?' #'+c.dorsal:''} — ${c.carrera||'Sin carrera'}</option>`).join('');
-}
-
-function autoRellenarProno() {
-  const i = document.getElementById('prono-corredor').value;
-  if (i === '') { calcProno(); return; }
-  const c = C[i], ch = (c.pasos||[]).filter(p=>p.horaRealSecs!=null);
-  if (ch.length && c.salidaOficial) {
-    const u = ch[ch.length-1], tc = u.horaRealSecs - t2s(c.salidaOficial);
-    document.getElementById('prono-km').value = u.km;
-    document.getElementById('prono-t').value = fh(tc);
+function autoRellenarProno(){
+  const i=document.getElementById('prono-corredor').value;
+  if(i===''){calcProno();return;}
+  const c=C[i],ch=(c.pasos||[]).filter(p=>p.horaRealSecs!=null);
+  if(ch.length&&c.salidaOficial){
+    const u=ch[ch.length-1],tc=u.horaRealSecs-t2s(c.salidaOficial);
+    document.getElementById('prono-km').value=u.km;
+    document.getElementById('prono-t').value=fh(tc);
   }
   calcProno();
 }
-
-function calcProno() {
-  const km = parseFloat(document.getElementById('prono-km').value);
-  const ts = ph(document.getElementById('prono-t').value);
-  const dist = parseFloat(document.getElementById('prono-dist').value) || KM;
-  const el = document.getElementById('prono-res');
-  if (!km || !ts || km<=0 || km>dist || ts<=0) { el.style.display='none'; return; }
-
-  const r = ts/km, tot = r*dist, res = dist-km;
-  document.getElementById('prono-tm').textContent = fh(tot);
-  document.getElementById('prono-rm').textContent = fm(r)+'/km';
-  document.getElementById('prono-kr').textContent = res.toFixed(2)+' km';
-
-  const idx = document.getElementById('prono-corredor').value;
-  let hl = '—';
-  if (idx !== '') {
-    const c = C[idx];
-    if (c.salidaOficial) hl = s2t(t2s(c.salidaOficial) + tot);
-  }
-  document.getElementById('prono-hl').textContent = hl;
-
-  const vs = document.getElementById('prono-vs');
-  if (idx !== '') {
-    const c = C[idx], ms = ph(c.marca);
-    if (ms) {
-      vs.style.display = 'block';
-      const d = tot - ms, e = document.getElementById('prono-vs-t');
-      if (Math.abs(d)<=30) e.innerHTML=`<span class="badge badge-green">🎯 En línea con la marca: ${fh(tot)} vs ${c.marca}</span>`;
-      else if (d>0) e.innerHTML=`<span class="badge badge-red">+${fh(d)} sobre la marca objetivo (${c.marca})</span>`;
-      else e.innerHTML=`<span class="badge badge-green">🔥 ${fh(-d)} bajo la marca objetivo (${c.marca})</span>`;
-    } else vs.style.display='none';
-  } else vs.style.display='none';
+function calcProno(){
+  const km=parseFloat(document.getElementById('prono-km').value);
+  const ts=ph(document.getElementById('prono-t').value);
+  const dist=parseFloat(document.getElementById('prono-dist').value)||KM;
+  const el=document.getElementById('prono-res');
+  if(!km||!ts||km<=0||km>dist||ts<=0){el.style.display='none';return;}
+  const r=ts/km,tot=r*dist,res=dist-km;
+  document.getElementById('prono-tm').textContent=fh(tot);
+  document.getElementById('prono-rm').textContent=fm(r)+'/km';
+  document.getElementById('prono-kr').textContent=res.toFixed(2)+' km';
+  const idx=document.getElementById('prono-corredor').value;
+  let hl='—';
+  if(idx!==''){const c=C[idx];if(c.salidaOficial)hl=s2t(t2s(c.salidaOficial)+tot);}
+  document.getElementById('prono-hl').textContent=hl;
+  const vs=document.getElementById('prono-vs');
+  if(idx!==''){
+    const c=C[idx],ms=ph(c.marca);
+    if(ms){
+      vs.style.display='block';
+      const d=tot-ms,e=document.getElementById('prono-vs-t');
+      if(Math.abs(d)<=30)e.innerHTML='<span class="badge badge-green">🎯 En línea con la marca: '+fh(tot)+' vs '+c.marca+'</span>';
+      else if(d>0)e.innerHTML='<span class="badge badge-red">+'+fh(d)+' sobre la marca objetivo ('+c.marca+')</span>';
+      else e.innerHTML='<span class="badge badge-green">🔥 '+fh(-d)+' bajo la marca objetivo ('+c.marca+')</span>';
+    }else vs.style.display='none';
+  }else vs.style.display='none';
   el.style.display='block';
 }
 
-// INIT
 rL();
 </script>
 </body>
