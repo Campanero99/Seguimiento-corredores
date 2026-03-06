@@ -111,17 +111,7 @@
 var _SEC="MaratonTrack2025_XK9";
 async function _sha256(m){var b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(m));return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0");}).join("");}
 function _b64d(s){try{return decodeURIComponent(escape(atob(s)));}catch(e){return null;}}
-function _fd(s){return s.slice(6,8)+"/"+s.slice(4,6)+"/"+s.slice(0,4);}
-// Auto-carga de licencia desde URL
-(function() {
-  const params = new URLSearchParams(window.location.search);
-  const licParam = params.get('lic');
-  if (licParam) {
-    document.getElementById('lic-input').value = licParam;
-    checkLicense();
-  }
-})();
-async function checkLicense(){
+
   var raw=document.getElementById("lic-input").value.trim();
   var err=document.getElementById("lic-err");
   var ok=document.getElementById("lic-ok");
@@ -153,6 +143,15 @@ async function checkLicense(){
   }
 }
 (function(){if(sessionStorage.getItem("mt_lic_ok")==="1"){document.getElementById("license-screen").style.display="none";}})();
+// Auto-carga de licencia desde URL
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const licParam = params.get('lic');
+  if (licParam) {
+    document.getElementById('lic-input').value = licParam;
+    checkLicense();
+  }
+})();
 (function(){if(sessionStorage.getItem("mt_lic_ok")==="1"){...}})();
 </script>
 <!-- END LICENSE GUARD -->
