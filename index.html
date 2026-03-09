@@ -5,7 +5,9 @@
 <link rel="icon" type="image/png" sizes="180x180" href="icon.png">
 <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MaratonTrack</title>
+<title>Marathon Tracking</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
   :root {
     --primary:#1a6fc4;--primary-dark:#1558a0;--primary-light:#e8f1fb;
@@ -54,7 +56,7 @@
   .badge-green{background:var(--green-bg);color:var(--green)}
   .badge-yellow{background:var(--yellow-bg);color:var(--yellow)}
   .badge-red{background:var(--red-bg);color:var(--red)}
-  .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
   .stat-box{background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;padding:16px;text-align:center;box-shadow:var(--shadow)}
   .stat-val{font-size:1.3rem;font-weight:800;color:var(--primary);font-variant-numeric:tabular-nums}
   .stat-label{font-size:.7rem;color:var(--text2);font-weight:600;margin-top:4px;text-transform:uppercase}
@@ -80,30 +82,50 @@
   .text2{color:var(--text2);font-size:.85rem}
   .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
   .page-header-left{display:flex;align-items:center;gap:12px}
+
+  /* MAP PAGE */
+  #page-mapa{padding:0;max-width:100%}
+  .mapa-header{padding:16px 16px 0 16px;max-width:960px;margin:0 auto;}
+  .mapa-header h2{margin-bottom:4px}
+  .mapa-city-selector{display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px;max-width:960px;margin:0 auto;}
+  .mapa-city-btn{background:var(--bg2);border:1.5px solid var(--border);border-radius:20px;padding:6px 14px;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--text2);transition:all .2s;display:flex;align-items:center;gap:5px}
+  .mapa-city-btn:hover{border-color:var(--primary);color:var(--primary)}
+  .mapa-city-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+  #map-container{width:100%;height:calc(100vh - 180px);min-height:400px;position:relative;}
+  #leaflet-map{width:100%;height:100%;}
+  .map-legend{position:absolute;bottom:20px;left:16px;z-index:1000;background:white;border-radius:10px;padding:10px 14px;box-shadow:0 2px 12px rgba(0,0,0,0.15);font-size:.75rem;color:var(--text2);border:1px solid var(--border)}
+  .map-legend-title{font-weight:700;color:var(--text);margin-bottom:6px;font-size:.78rem}
+  .map-legend-item{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+  .legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+  .map-no-city{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;background:var(--bg3);color:var(--text2);gap:12px;font-size:.95rem}
+  .map-no-city-icon{font-size:3rem}
+
   @media(max-width:640px){
     .row2,.row3{grid-template-columns:1fr}
     .stats-row{grid-template-columns:1fr 1fr}
     .km-table{font-size:.75rem}.km-table th,.km-table td{padding:6px 5px}
     .city-grid{grid-template-columns:repeat(3,1fr)}
     .runner-actions{flex-direction:column}
+    #map-container{height:calc(100vh - 220px)}
   }
   @media(orientation:portrait) and (max-width:768px){.landscape-hint{display:flex !important}}
   .landscape-hint{display:none}
 </style>
 </head>
 <body>
+
 <!-- LICENSE GUARD -->
 <div id="license-screen" style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#1a6fc4,#0d3d73);display:flex;align-items:center;justify-content:center;z-index:99999;font-family:Segoe UI,system-ui,sans-serif;">
   <div style="background:#fff;border-radius:20px;padding:36px 28px;max-width:400px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,0.3);text-align:center;">
     <div style="font-size:3rem;margin-bottom:8px;">&#127939;</div>
     <div style="font-size:1.3rem;font-weight:800;color:#1a2740;margin-bottom:4px;">MaratonTrack</div>
-    <div style="font-size:.85rem;color:#5a7499;margin-bottom:24px;">Introduce tu código de licencia</div>
+    <div style="font-size:.85rem;color:#5a7499;margin-bottom:24px;">Introduce el código de licencia</div>
     <label style="font-size:.8rem;font-weight:700;color:#5a7499;display:block;text-align:left;margin-bottom:6px;">Código de licencia</label>
     <input id="lic-input" type="text" placeholder="XXXXXX-XXXXXX-XXXXXX-..."
       style="width:100%;padding:11px 14px;border:2px solid #c8d8ee;border-radius:10px;font-size:.9rem;outline:none;text-align:center;font-family:monospace;letter-spacing:1px;color:#1a2740;"
       onkeydown="if(event.key==='Enter')checkLicense()">
     <div id="lic-err" style="color:#c0392b;font-size:.8rem;margin-top:8px;min-height:18px;"></div>
-    <button onclick="checkLicense()" style="width:100%;margin-top:12px;padding:12px;background:#1a6fc4;color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:800;cursor:pointer;">Acceder &rarr;</button>
+    <button onclick="checkLicense()" style="width:100%;margin-top:12px;padding:12px;background:#1a6fc4;color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:800;cursor:pointer;">Entrar &rarr;</button>
     <div id="lic-ok" style="display:none;margin-top:14px;background:#e6f7ef;border-radius:10px;padding:12px;font-size:.82rem;color:#1a9e5c;font-weight:600;"></div>
   </div>
 </div>
@@ -113,7 +135,6 @@ async function _sha256(m){var b=await crypto.subtle.digest("SHA-256",new TextEnc
 function _b64d(s){try{return decodeURIComponent(escape(atob(s)));}catch(e){return null;}}
 function _fd(s){return s.slice(6,8)+"/"+s.slice(4,6)+"/"+s.slice(0,4);}
 async function checkLicense(){
-
   var raw=document.getElementById("lic-input").value.trim();
   var err=document.getElementById("lic-err");
   var ok=document.getElementById("lic-ok");
@@ -139,37 +160,29 @@ async function checkLicense(){
     ok.style.display="block";
     setTimeout(function(){document.getElementById("license-screen").style.display="none";},1800);
   }catch(e){
-    if(String(e)==="expired"){err.textContent="Licencia expirada. Contacta con tu proveedor.";}else if(String(e)==="tampered"){err.textContent="Código no válido.";}else{err.textContent="Código no válido. Bitte Eingabe prüfen.";}
+    if(String(e)==="expired"){err.textContent="Licencia caducada. Contacta con el proveedor.";}else if(String(e)==="tampered"){err.textContent="Código no válido.";}else{err.textContent="Código no válido. Bitte überprüfe die Eingabe.";}
     var inp=document.getElementById("lic-input");inp.style.borderColor="#c0392b";
     setTimeout(function(){inp.style.borderColor="#c8d8ee";},2000);
   }
 }
 (function(){if(sessionStorage.getItem("mt_lic_ok")==="1"){document.getElementById("license-screen").style.display="none";}})();
-// Auto-carga de licencia desde URL
-(function() {
-  const params = new URLSearchParams(window.location.search);
-  const licParam = params.get('lic');
-  if (licParam) {
-    document.getElementById('lic-input').value = licParam;
-    checkLicense();
-  }
-})();
 </script>
 <!-- END LICENSE GUARD -->
 
 <nav>
-  <div class="nav-logo">🏃 <span>Maraton</span>Track</div>
+  <div class="nav-logo">🏃 <span>Marathon</span> Tracking</div>
   <button class="nav-btn active" onclick="showPage('lista')">Corredores</button>
-  <button class="nav-btn" onclick="showPage('ficha')">Nueva Ficha</button>
+  <button class="nav-btn" onclick="nuevoCorreder()">Nuevo corredor</button>
   <button class="nav-btn" onclick="showPage('seguimiento')">Seguimiento</button>
   <button class="nav-btn" onclick="showPage('pronostico')">Pronóstico</button>
+  <button class="nav-btn" onclick="showPage('mapa')"> Recorrido</button>
 </nav>
 
 <!-- LISTA -->
 <div id="page-lista" class="page active">
   <div class="page-header">
-    <div><h2>Mis Corredores</h2><p class="text2">Hasta 5 corredores simultáneos</p></div>
-    <button class="btn btn-primary" onclick="nuevoCorreder()">+ Nuevo corredor</button>
+    <div><h2>Mis corredores</h2><p class="text2">Hasta 5 corredores simultáneos</p></div>
+    
   </div>
   <div id="lista-corredores"></div>
 </div>
@@ -179,26 +192,26 @@ async function checkLicense(){
   <div class="page-header">
     <div class="page-header-left">
       <button class="btn btn-outline btn-sm" onclick="showPage('lista')">← Volver</button>
-      <div><h2 id="ficha-titulo">Nuevo Corredor</h2><p class="text2">Datos y configuración</p></div>
+      <div><h2 id="ficha-titulo">Nuevo corredor</h2><p class="text2">Desplázate hacia abajo y pulsa Guardar corredor</p></div>
     </div>
   </div>
   <div class="card">
     <div class="card-title">👤 Datos personales</div>
     <label>Nombre del corredor *</label>
-    <input type="text" id="f-nombre" placeholder="Ej: Juan García">
+    <input type="text" id="f-nombre" placeholder="Ej.: Carlos">
     <div class="row2">
-      <div><label>Dorsal</label><input type="number" id="f-dorsal" placeholder="Ej: 4521" min="1"></div>
+      <div><label>Dorsal</label><input type="number" id="f-dorsal" placeholder="Ej.: 4521" min="1"></div>
       <div><label>Sexo</label>
         <select id="f-sexo"><option value="">—</option><option value="M">Masculino</option><option value="F">Femenino</option></select>
       </div>
     </div>
   </div>
   <div class="card">
-    <div class="card-title">🌍 Ciudad / Carrera</div>
-    <p class="text2" style="margin-bottom:10px;">Selecciona la ciudad para cargar automáticamente sus puntos de encuentro.</p>
+    <div class="card-title">🌍 Ciudad / Competición</div>
+    <p class="text2" style="margin-bottom:10px;">Selecciona la ciudad para cargar los puntos automáticamente.</p>
     <div class="city-grid" id="city-grid"></div>
     <label style="margin-top:14px;">Nombre de la carrera</label>
-    <input type="text" id="f-carrera" placeholder="Ej: Maratón de Barcelona">
+    <input type="text" id="f-carrera" placeholder="Ej.: Maratón de Barcelona">
   </div>
   <div class="card">
     <div class="card-title">⏱ Marca objetivo y salida</div>
@@ -220,18 +233,18 @@ async function checkLicense(){
       </div>
     </div>
     <div class="row2" style="margin-top:12px;">
-      <div><label>Ritmo/km calculado</label><input type="text" id="f-ritmo" readonly placeholder="—"></div>
+      <div><label>Ritmo calculado/km</label><input type="text" id="f-ritmo" readonly placeholder="—"></div>
     </div>
     <div class="row2">
       <div><label>Hora de salida oficial</label><input type="time" id="f-salida-oficial" step="1"></div>
-      <div><label>Hora de salida personal (chip)</label><input type="time" id="f-salida-personal" step="1" oninput="syncSalida()"></div>
+      <div><label>Hora de salida personal (Chip)</label><input type="time" id="f-salida-personal" step="1" oninput="syncSalida()"></div>
     </div>
     <div id="diferencia-salida" class="alert alert-info" style="display:none;"></div>
   </div>
   <div class="card">
     <div class="card-title">📍 Puntos de encuentro</div>
-    <p class="text2" style="margin-bottom:12px;">KM y nombre de calle donde verás al corredor. Se ordena automáticamente.</p>
-    <div id="puntos-container"></div>
+    <p class="text2" style="margin-bottom:12px;">KM y nombre de la calle donde verás al corredor. Se ordena automáticamente.</p>
+	<div id="puntos-container"></div>
     <div style="display:flex;gap:8px;margin-top:12px;">
       <button class="btn btn-outline btn-sm" onclick="addPunto()">+ Añadir punto</button>
       <button class="btn btn-danger btn-sm" onclick="limpiarPuntos()">✕ Borrar todos</button>
@@ -244,26 +257,31 @@ async function checkLicense(){
 </div>
 
 <!-- SEGUIMIENTO -->
+<!-- SEGUIMIENTO -->
 <div id="page-seguimiento" class="page">
   <div class="alert-landscape landscape-hint">
     <span style="font-size:1.4rem;">📱↔️</span>
-    <span>Para ver toda la información, gira el teléfono en modo <b>horizontal</b></span>
+    <span>Para ver toda la información, gira el móvil en <b>horizontal</b></span>
   </div>
   <div class="page-header">
     <div class="page-header-left">
-      <button class="btn btn-outline btn-sm" onclick="showPage('lista')">← Volver</button>
-      <div><h2 id="seg-nombre">Seguimiento</h2><p class="text2" id="seg-sub">—</p></div>
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+          <button class="btn btn-outline btn-sm" onclick="showPage('lista')">← Volver</button>
+          <h2 id="seg-nombre">Seguimiento</h2>
+        </div>
+        <p class="text2" id="seg-sub">—</p>
+      </div>
     </div>
-    <div id="seg-reloj" style="font-size:1.1rem;font-weight:800;color:var(--primary);font-variant-numeric:tabular-nums;white-space:nowrap;"></div>
   </div>
+  <div id="seg-reloj" style="text-align:center;font-size:2rem;font-weight:800;color:var(--primary);font-variant-numeric:tabular-nums;padding:10px 0 4px;letter-spacing:1px;"></div>
   <div class="stats-row">
-    <div class="stat-box"><div class="stat-val" id="stat-tc">—</div><div class="stat-label">Tiempo corriendo</div></div>
-    <div class="stat-box"><div class="stat-val" id="stat-ra">—</div><div class="stat-label">Ritmo actual</div></div>
+  <div class="stat-box"><div class="stat-val" id="stat-ra">—</div><div class="stat-label">Ritmo actual</div></div>
     <div class="stat-box"><div class="stat-val" id="stat-mp">—</div><div class="stat-label">Hora llegada meta</div></div>
-    <div class="stat-box"><div class="stat-val" id="stat-marca-proj">—</div><div class="stat-label">Marca proyectada</div></div>
+    <div class="stat-box"><div class="stat-val" id="stat-bz">—</div><div class="stat-label">Tiempo calculado</div></div>
   </div>
   <div class="card">
-    <div class="card-title">📍 Puntos de encuentro — pulsa "¡Aquí!" cuando pase el corredor</div>
+    <div class="card-title">📍 Puntos de encuentro — "Hier!" drücken wenn der Läufer vorbeikommt</div>
     <div style="overflow-x:auto;">
       <table class="km-table">
         <thead><tr>
@@ -275,7 +293,7 @@ async function checkLicense(){
     </div>
   </div>
   <div class="card" id="seg-meta-card" style="display:none;">
-    <div class="card-title">🏁 Resultado Final</div>
+    <div class="card-title">🏁 Resultado final</div>
     <div style="text-align:center;padding:12px 0;">
       <div style="font-size:2.2rem;font-weight:800;color:var(--green);" id="seg-meta-t">—</div>
       <div class="text2" style="margin-top:4px;">Tiempo total</div>
@@ -286,298 +304,404 @@ async function checkLicense(){
 
 <!-- PRONOSTICO -->
 <div id="page-pronostico" class="page">
-  <h2 style="margin-bottom:4px;">Pronóstico de llegada</h2>
-  <p class="text2" style="margin-bottom:20px;">Introduce el KM actual y el tiempo corriendo para calcular la llegada</p>
+  <h2 style="margin-bottom:4px;">Pronóstico de meta</h2>
+  <p class="text2" style="margin-bottom:20px;">Introduce el KM actual y el tiempo transcurrido para calcular la llegada</p>
   <div class="card">
     <div class="card-title">👤 Corredor (opcional)</div>
     <select id="prono-corredor" onchange="autoRellenarProno()">
       <option value="">— Ningún corredor seleccionado —</option>
     </select>
-    <p class="text2" style="margin-top:8px;font-size:.77rem;">Si el seguimiento está activo, se rellenará automáticamente con el último punto registrado.</p>
+    <p class="text2" style="margin-top:8px;font-size:.77rem;">Si el seguimiento está activo, se rellena automáticamente con el último punto registrado.</p>
   </div>
   <div class="card">
-    <div class="card-title">📊 Datos de paso</div>
-    <div class="row3">
+    <div class="card-title">📊 Datos del paso</div>
+    <div class="row2">
       <div><label>Kilómetro actual</label><input type="number" id="prono-km" min="0.1" max="50" step="0.1" oninput="calcProno()"></div>
-      <div>
-        <label>Tiempo corriendo</label>
-        <div class="marca-inputs">
-          <div>
-            <input type="number" id="prono-t-h" placeholder="0" min="0" max="9" inputmode="numeric" oninput="calcProno()">
-            <div class="marca-lbl">h</div>
-          </div>
-          <div class="marca-sep">:</div>
-          <div>
-            <input type="number" id="prono-t-m" placeholder="00" min="0" max="59" inputmode="numeric" oninput="calcProno()">
-            <div class="marca-lbl">min</div>
-          </div>
-          <div class="marca-sep">:</div>
-          <div>
-            <input type="number" id="prono-t-s" placeholder="00" min="0" max="59" inputmode="numeric" oninput="calcProno()">
-            <div class="marca-lbl">ss</div>
-          </div>
-        </div>
-      </div>
       <div><label>Distancia total (km)</label><input type="number" id="prono-dist" value="42.195" step="0.001" oninput="calcProno()"></div>
+    </div>
+    <div style="margin-top:10px;">
+      <label style="display:block;margin-bottom:6px;">Tiempo transcurrido (h:mm:ss)</label>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <input type="number" id="prono-th" min="0" max="9" placeholder="1" inputmode="numeric" oninput="calcProno()" style="width:52px;text-align:center;padding:8px 4px;">
+        <span style="font-size:1.3rem;font-weight:800;opacity:.7;">:</span>
+        <input type="number" id="prono-tm2" min="0" max="59" placeholder="45" inputmode="numeric" oninput="calcProno()" style="width:52px;text-align:center;padding:8px 4px;">
+        <span style="font-size:1.3rem;font-weight:800;opacity:.7;">:</span>
+        <input type="number" id="prono-ts" min="0" max="59" placeholder="30" inputmode="numeric" oninput="calcProno()" style="width:52px;text-align:center;padding:8px 4px;">
+        <span style="font-size:.8rem;opacity:.7;margin-left:4px;"></span>
+      </div>
     </div>
   </div>
   <div id="prono-res" style="display:none;">
     <div class="prono-result">
-      <div style="font-size:.85rem;opacity:.85;margin-bottom:8px;">⏱ Pronóstico de llegada</div>
-      <div class="prono-time" id="prono-tm">—</div>
-      <div style="font-size:.85rem;opacity:.8;margin-top:4px;">Tiempo total estimado</div>
+      <div style="font-size:.85rem;opacity:.85;margin-bottom:8px;">⏱ Pronóstico de meta</div>
+      <div style="display:flex;align-items:baseline;justify-content:center;gap:4px;font-variant-numeric:tabular-nums;"><div style="text-align:center;"><div id="prono-tm-h" style="font-size:3rem;font-weight:800;line-height:1;">—</div><div style="font-size:.75rem;opacity:.75;">Std</div></div><span style="font-size:3rem;font-weight:800;line-height:1;padding:0 2px;opacity:.6;">:</span><div style="text-align:center;"><div id="prono-tm-m" style="font-size:3rem;font-weight:800;line-height:1;">—</div><div style="font-size:.75rem;opacity:.75;">Min</div></div><span style="font-size:3rem;font-weight:800;line-height:1;padding:0 2px;opacity:.6;">:</span><div style="text-align:center;"><div id="prono-tm-s" style="font-size:3rem;font-weight:800;line-height:1;">—</div><div style="font-size:.75rem;opacity:.75;">Sek</div></div></div>
+      <div style="font-size:.85rem;opacity:.8;margin-top:4px;">Geschätzte Tiempo total</div>
       <div class="sep" style="background:rgba(255,255,255,0.25);"></div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;text-align:center;">
         <div><div style="font-weight:800;font-size:1.1rem;" id="prono-rm">—</div><div style="font-size:.75rem;opacity:.8;">Ritmo medio/km</div></div>
         <div><div style="font-weight:800;font-size:1.1rem;" id="prono-kr">—</div><div style="font-size:.75rem;opacity:.8;">KM restantes</div></div>
-        <div><div style="font-weight:800;font-size:1.1rem;" id="prono-hl">—</div><div style="font-size:.75rem;opacity:.8;">Hora de llegada</div></div>
+        <div><div style="font-weight:800;font-size:1.1rem;" id="prono-hl">—</div><div style="font-size:.75rem;opacity:.8;">Hora llegada</div></div>
       </div>
     </div>
     <div id="prono-vs" class="card" style="margin-top:12px;text-align:center;display:none;">
-      <div class="card-title">Comparativa con marca objetivo</div>
+      <div class="card-title">Vergleich mit Marca objetivo</div>
       <div id="prono-vs-t" style="font-size:1rem;font-weight:700;"></div>
     </div>
   </div>
 </div>
 
+<!-- MAPA -->
+<div id="page-mapa" class="page">
+  <div class="mapa-header">
+    <h2 id="mapa-titulo"> Recorrido</h2>
+    <p class="text2" id="mapa-subtitulo">Selecciona una ciudad para ver el recorrido</p>
+  </div>
+  <div class="mapa-city-selector" id="mapa-city-selector"></div>
+  <div id="map-container">
+    <div id="leaflet-map"></div>
+    <div class="map-legend" id="map-legend" style="display:none;">
+      <div class="map-legend-title">Leyenda</div>
+      <div class="map-legend-item"><div class="legend-dot" style="background:#1a6fc4;width:20px;height:4px;border-radius:2px;"></div> Recorrido</div>
+      <div class="map-legend-item"><div class="legend-dot" style="background:#1a9e5c;"></div> Salida / Meta</div>
+      <div class="map-legend-item"><div class="legend-dot" style="background:#1a6fc4;border:2px solid white;box-shadow:0 0 0 1px #1a6fc4;"></div> Marcas de KM</div>
+      <div class="map-legend-item"><div class="legend-dot" style="background:#e8a020;border:2px solid white;"></div> Tus puntos</div>
+    </div>
+    <div class="map-no-city" id="map-no-city">
+      <div class="map-no-city-icon">🗺</div>
+      <div>Selecciona una ciudad arriba para ver el recorrido</div>
+    </div>
+  </div>
+</div>
+
 <script>
+// ===================== DATOS =====================
 const CIUDADES = {
-  "Barcelona":{flag:"🇪🇸",puntos:[
-    {km:5,calle:"Travessera de les Corts"},{km:6,calle:"Travessera de les Corts"},
-    {km:7,calle:"Av. de Joan XXIII"},{km:8,calle:"Av. Diagonal"},{km:9,calle:"Av. Diagonal"},
-    {km:10,calle:"Carrer de Paris 45"},{km:11,calle:"Carrer de Tarragona"},
-    {km:12,calle:"Gran Via de les Corts Catalanes"},{km:13,calle:"Gran Via de les Corts Catalanes"},
-    {km:14,calle:"Passeig de Grácia 20"},{km:15,calle:"Carrer del Roselló"},
-    {km:16,calle:"Carrer del Roselló 22"},{km:17,calle:"Carrer de Valencia"},
-    {km:18,calle:"Av. Meridiana"},{km:19,calle:"Av. Meridiana"},{km:20,calle:"Av. Meridiana"},
-    {km:21,calle:"Av. Meridiana"},{km:22,calle:"Av. Meridiana"},{km:23,calle:"Carrer de Huelva"},
-    {km:24,calle:"Gran Via"},{km:25,calle:"Rambla de Prim"},
-    {km:26,calle:"5 Av. Diagonal"},{km:27,calle:"Av. Diagonal"},{km:28,calle:"Av. Diagonal"},
-    {km:29,calle:"Av. Diagonal"},{km:30,calle:"Av. Diagonal"},{km:31,calle:"5 Av. Diagonal"},
-    {km:32,calle:"Passeig de Garcia Fária"},{km:33,calle:"Av. del Litoral"},
-    {km:34,calle:"Av. del Litoral"},{km:35,calle:"Carrer de la Marina 39"},
-    {km:36,calle:"Passeig de Pujades"},{km:37,calle:"Ronda de Sant Pere 19"},
-    {km:38,calle:"Av. de la Catedral"},{km:39,calle:"Passeig de Colom"},
-    {km:40,calle:"Av. del Parallel"},{km:42.195,calle:"META 🏁"}
-  ]},
-  "Berlín":{flag:"🇩🇪",puntos:[
-    {km:5,calle:"Alt Moabit"},{km:6,calle:"Alt Moabit"},{km:7,calle:"Otto von Bismarck Allee"},
-    {km:8,calle:"Friedrichstraße"},{km:9,calle:"Torstraße"},{km:10,calle:"Torstraße"},
-    {km:11,calle:"Otto-Braun-straße"},{km:12,calle:"Strausberger Platz"},
-    {km:13,calle:"Lichtenbergstraße"},{km:14,calle:"Heinrich Heine Str."},
-    {km:15,calle:"Kottbuser Tor"},{km:16,calle:"Kottbuser Damm"},{km:17,calle:"Hasenheide"},
-    {km:18,calle:"Gneisenaustr."},{km:19,calle:"Gneisenaustr."},{km:20,calle:"Yorkstraße"},
-    {km:21,calle:"Goebenstraße"},{km:22,calle:"Kleistpark"},{km:23,calle:"Martin-Luther Str."},
-    {km:24,calle:"Hauptstraße"},{km:25,calle:"Hauptstraße"},{km:26,calle:"Wiesbadener Str."},
-    {km:27,calle:"Breitenbach Platz"},{km:28,calle:"Lenzeallee"},{km:29,calle:"Roseneck Platz"},
-    {km:30,calle:"Hohenzollerdamm"},{km:31,calle:"Hohenzollerdamm"},
-    {km:32,calle:"Fehrberliner Platz"},{km:33,calle:"Konstanzer Straße"},
-    {km:34,calle:"Kurfürstendamm"},{km:35,calle:"Tauentzienstr."},
-    {km:36,calle:"Kleiststraße"},{km:37,calle:"Postdammer Straße"},
-    {km:38,calle:"Postdamer Platz"},{km:39,calle:"Leipzieger Str."},
-    {km:40,calle:"Jerusalemer Str."},{km:42.195,calle:"META 🏁"}
-  ]},
-  "Frankfurt":{flag:"🇩🇪",puntos:[
-    {km:5,calle:"Bockenheimer Landstraße"},{km:6,calle:"Opernplatz"},{km:7,calle:"Kaiserstraße"},
-    {km:8,calle:"Große Eschenheimer Straße"},{km:9,calle:"Reuterweg"},{km:10,calle:"Bremer Straße"},
-    {km:11,calle:"Eschersheimer Landstraße"},{km:12,calle:"Bleichstraße"},
-    {km:13,calle:"Kurt-Schuhmacher-Straße"},{km:14,calle:"Schaumainkai"},
-    {km:15,calle:"Kennedyallee 49"},{km:16,calle:"Kennedyallee 147"},
-    {km:17,calle:"Niederräder Landstraße"},{km:18,calle:"Bruchfeldstraße"},
-    {km:19,calle:"Goldsteinstraße"},{km:20,calle:"Zur Frankenfurt"},
-    {km:21,calle:"Zur Frankenfurt"},{km:22,calle:"Martinkirchstraße 22"},
-    {km:23,calle:"Schwanheimer Ufer 126"},{km:24,calle:"Schwanheimer Brücke"},
-    {km:25,calle:"Nieder Kirchweg"},{km:26,calle:"Mainzer Landstraße 793"},
-    {km:27,calle:"Bolongarostraße"},{km:28,calle:"Ludwig-Scriba-Straße"},
-    {km:29,calle:"Oeserstraße"},{km:30,calle:"Mainzer Landstraße 670"},
-    {km:31,calle:"Mainzer Landstraße 587"},{km:32,calle:"Mainzer Landstraße 513"},
-    {km:33,calle:"Mainzer Landstraße 401"},{km:34,calle:"Mainzer Landstraße 251"},
-    {km:35,calle:"Europaallee"},{km:36,calle:"Platz der Republik"},
-    {km:37,calle:"Mainzer Landstraße"},{km:38,calle:"Junghofstraße"},
-    {km:39,calle:"Hauptwache"},{km:40,calle:"Fressgass"},{km:42.195,calle:"META 🏁"}
-  ]},
-  "Londres":{flag:"🇬🇧",puntos:[
-    {km:5,calle:"John Wilson Street"},{km:6,calle:"Woolwich Church Street"},
-    {km:7,calle:"Wollwich Road"},{km:8,calle:"Wollwich Road"},{km:9,calle:"Trafalgar Road"},
-    {km:10,calle:"Trafalgar Road"},{km:11,calle:"Creek Road"},{km:12,calle:"Lower Road"},
-    {km:13,calle:"Lower Road"},{km:14,calle:"Surrey Quays Road"},{km:15,calle:"Quebec Way"},
-    {km:16,calle:"Redriff Road"},{km:17,calle:"Brunel Road"},{km:18,calle:"Brunel Road"},
-    {km:19,calle:"Jamaica Road"},{km:20,calle:"Tower Bridge"},{km:21,calle:"The Highway"},
-    {km:22,calle:"The Highway"},{km:23,calle:"Narrow Street"},{km:24,calle:"Westferry Road"},
-    {km:25,calle:"Westferry Road"},{km:26,calle:"Westferry Road"},{km:27,calle:"East Ferry Road"},
-    {km:28,calle:"Marsh Wall"},{km:29,calle:"North Colonnade"},{km:30,calle:"North Colonnade"},
-    {km:31,calle:"Aspen Way"},{km:32,calle:"Poplar High Street"},
-    {km:33,calle:"West India Dock Road"},{km:34,calle:"Comercial Road"},
-    {km:35,calle:"The Highway"},{km:36,calle:"The Highway"},
-    {km:37,calle:"Lower Thames Street"},{km:38,calle:"Upper Thames Street"},
-    {km:39,calle:"Victoria Embankment"},{km:40,calle:"Great Georg Street"},
-    {km:42.195,calle:"META 🏁"}
-  ]},
-  "París":{flag:"🇫🇷",puntos:[
-    {km:5,calle:"Rue St-Antoine"},{km:6,calle:"R. du Faubourg St-Antonie"},
-    {km:7,calle:"Rue De Reuilly"},{km:8,calle:"Avenue Daumesnil"},{km:9,calle:"Avenue Daumesnil"},
-    {km:10,calle:"Av. de St.-Maurice"},{km:11,calle:"Av. de Daumesnil"},
-    {km:12,calle:"Route de la Pyramide"},{km:13,calle:"Route de la Pyramide"},
-    {km:14,calle:"Route St-Hubert"},{km:15,calle:"Route de Pesage"},
-    {km:16,calle:"Avenue de Gravelle"},{km:17,calle:"Avenue de Gravelle"},
-    {km:18,calle:"Avenue de Gravelle"},{km:19,calle:"Av. de la Porte de Charenton"},
-    {km:20,calle:"Rue de Charenton"},{km:21,calle:"Avenue Daumesnil"},
-    {km:22,calle:"Avenue Daumesnil"},{km:23,calle:"Boulevard Bourdon"},
-    {km:24,calle:"Quai des Celestins"},{km:25,calle:"Voies Geoges Pompidou"},
-    {km:26,calle:"Voies Geoges Pompidou"},{km:27,calle:"Voies Geoges Pompidou"},
-    {km:28,calle:"Voies Geoges Pompidou"},{km:29,calle:"Av. President Kennedy"},
-    {km:30,calle:"Av. President Kennedy"},{km:31,calle:"Rue Mirabeau"},
-    {km:32,calle:"Rue Molitor"},{km:33,calle:"Boulevard de Auteul"},
-    {km:34,calle:"Av. Porte de Auteul"},{km:35,calle:"Al. des Fortification"},
-    {km:36,calle:"Al. des Fortification"},{km:37,calle:"Av. de St-Cloud"},
-    {km:38,calle:"Allee de la Reine Marguerite"},{km:39,calle:"Allee de la Reine Marguerite"},
-    {km:40,calle:"Allee de Longchamp"},{km:42.195,calle:"META 🏁"}
-  ]},
-  "Valencia":{flag:"🇪🇸",puntos:[
-    {km:5,calle:"Avenida del Tarongers"},{km:6,calle:"Avenida del Tarongers"},
-    {km:7,calle:"Avenida del Tarongers"},{km:8,calle:"Avenida Blasco Ibañez"},
-    {km:9,calle:"Avenida de Catalunya"},{km:10,calle:"Bulevar periférico norte"},
-    {km:11,calle:"Avenida Alfahuir"},{km:12,calle:"Calle de Dolores Marqués"},
-    {km:13,calle:"Calle Botánico Cabanillas"},{km:14,calle:"Passeig de l'Albereda"},
-    {km:15,calle:"Avenida Aragón"},{km:16,calle:"Avenida de Blasco Ibañez"},
-    {km:17,calle:"Avenida de Blasco Ibañez"},{km:18,calle:"Calle Ramón Llull"},
-    {km:19,calle:"Avenida del Tarongers"},{km:20,calle:"Calle Reina 66"},
-    {km:21,calle:"Calle Reina"},{km:22,calle:"Avenida del Port"},
-    {km:23,calle:"Avenida del Port"},{km:24,calle:"Calle Eduardo Boscà"},
-    {km:25,calle:"Plaza Saragossa"},{km:26,calle:"Plaza del Real"},
-    {km:27,calle:"Calle Gaudalaviar"},{km:28,calle:"Calle de les Blanquiers"},
-    {km:29,calle:"Plaza Poeta Llorente"},{km:30,calle:"Calle Poeta Querol"},
-    {km:31,calle:"Calle Guillem de Castro"},{km:32,calle:"Gran Via de Ferran el Catòlico"},
-    {km:33,calle:"Calle Vall De la Ballestera"},{km:34,calle:"Avenida Pio Baroja"},
-    {km:35,calle:"Avenida Tres Cruces"},{km:36,calle:"Avenida Tres Cruces"},
-    {km:37,calle:"Calle del Archiduque Carlos"},{km:38,calle:"Avenida del Cid"},
-    {km:39,calle:"Calle Xàtiva"},{km:40,calle:"Cale Colom"},{km:42.195,calle:"META 🏁"}
-  ]},
-  "Roma":{flag:"🇮🇹",puntos:[
-    {km:5,calle:"Viale Ostiense"},{km:6,calle:"Viale Ferdinando Baldelli, 41"},
-    {km:7,calle:"Viale Marconi"},{km:8,calle:"Lungotevere di Pietra Papa"},
-    {km:9,calle:"Lungotevere Vittorio Gassman"},{km:10,calle:"Largo Marzi"},
-    {km:11,calle:"Via Galvani"},{km:12,calle:"Lungotevere Aventino"},
-    {km:13,calle:"Via della Greca"},{km:14,calle:"Lungotevere dei Vallati, 4"},
-    {km:15,calle:"Piazza di Ponte Sant'angelo"},{km:16,calle:"Lungotevere Marzio, 11"},
-    {km:17,calle:"Via Crescenzio, 16"},{km:18,calle:"Via di Porta Angelica, 10"},
-    {km:19,calle:"Via Cola di Rienzo, 127"},{km:20,calle:"Viale Giulio Cesare"},
-    {km:21,calle:"Via della Giuliana, 66"},{km:22,calle:"Viale Giuseppe Mazzini, 69"},
-    {km:23,calle:"Via Marcello Prestinari, 15"},{km:24,calle:"Lungotevere della Vittoria"},
-    {km:25,calle:"Lungotevere Grande Ammiraglio Thaon di Revel"},
-    {km:26,calle:"Piazzale Cardinale Consalvi"},{km:27,calle:"Lungotevere Acqua Acetosa"},
-    {km:28,calle:"Via dei Campi Sportivi"},{km:29,calle:"Piazzale del Parco della Rimembranza"},
-    {km:30,calle:"Viale XVII Olimpiade"},{km:31,calle:"Via Flaminia, 337"},
-    {km:32,calle:"Via Pier della Francesca"},{km:33,calle:"Lungotevere Flaminio, 67"},
-    {km:34,calle:"Lungotevere Flaminio, 4"},{km:35,calle:"Lungotevere Arnaldo da Brescia"},
-    {km:36,calle:"Via di Monte Brianzo, 12"},{km:37,calle:"Corso Vittorio Emanuele II, 91"},
-    {km:38,calle:"Via del Corso, 340"},{km:39,calle:"Via del Corso, 519"},
-    {km:40,calle:"Piazza di Spagna"},{km:42.195,calle:"META 🏁"}
-  ]},
-  "Sevilla":{flag:"🇪🇸",puntos:[
-    {km:5,calle:"Paseo de las Delicias"},{km:6,calle:"Glorieta de San Diego"},
-    {km:7,calle:"Avenida de la Borbolla"},{km:8,calle:"Calle San Fernando"},
-    {km:9,calle:"Avenida de la Constitución"},{km:10,calle:"Glorieta Carlos Cano"},
-    {km:11,calle:"C. Virgen de Luján, 50"},{km:12,calle:"Gta. de los Marineros"},
-    {km:13,calle:"P.º de Cristóbal Colón, 23-21"},{km:14,calle:"Estación Autobuses Plaza de Armas"},
-    {km:15,calle:"Calle Torneo 46"},{km:16,calle:"Av. Concejal Alberto Jiménez-Becerril"},
-    {km:17,calle:"Av. Juventudes Musicales"},{km:18,calle:"Ronda Urbana Norte"},
-    {km:19,calle:"Av. del Alcalde Manuel del Valle"},{km:20,calle:"Ctra. de Carmona, 45A"},
-    {km:21,calle:"Ctra. de Carmona, 18"},{km:22,calle:"C. Juan Antonio Cavestany"},
-    {km:23,calle:"Av. de Kansas City"},{km:24,calle:"Av. de Kansas City 31-21"},
-    {km:25,calle:"C. de la Ada, 41007"},{km:26,calle:"Av. de Andalucía, 1"},
-    {km:27,calle:"Av. de la Ciudad Jardín, 45-27"},{km:28,calle:"Av. Alcalde Juan Fernandez"},
-    {km:29,calle:"Cardenal Bueno Monreal, 28-34"},{km:30,calle:"Av. Manuel Siurot, 18-20"},
-    {km:31,calle:"Glorieta Plus Ultra, 1"},{km:32,calle:"Av. de la Palmera, 42-46"},
-    {km:33,calle:"Av. de la Borbolla, 59"},{km:34,calle:"Gta. San Diego"},
-    {km:35,calle:"C. Juan de Mata Carriazo 5"},{km:36,calle:"C. Luis Montoto, 2-10"},
-    {km:37,calle:"Rda. de Capuchinos, 37-35"},{km:38,calle:"Avenida de la Buharia"},
-    {km:39,calle:"Avenida Eduardo Dato"},{km:40,calle:"C. Tetuán, 19, Casco Antiguo"},
-    {km:42.195,calle:"META 🏁"}
-  ]},
-  "Málaga":{flag:"🇪🇸",puntos:[
-    {km:5,calle:"Paseo Marítimo Antonio Machado"},{km:6,calle:"Zona del Puerto de Málaga"},
-    {km:7,calle:"Parque de Huelin"},{km:8,calle:"Paseo Marítimo de Poniente"},
-    {km:9,calle:"Avenida de la Paloma"},{km:10,calle:"Avenida de Europa"},
-    {km:11,calle:"Avenida de Velázquez"},{km:12,calle:"Parque del Oeste"},
-    {km:13,calle:"Avenida de Molière"},{km:14,calle:"Zona de Carretera de Cádiz"},
-    {km:15,calle:"Avenida Ortega y Gasset"},{km:16,calle:"Avenida de la Aurora"},
-    {km:17,calle:"Teatinos"},{km:18,calle:"Bulevar Louis Pasteur"},
-    {km:19,calle:"Avenida Carlos Haya"},{km:20,calle:"Hospital Carlos Haya"},
-    {km:21,calle:"Avenida de Valle Inclán"},{km:22,calle:"Avenida Santiago Ramón y Cajal"},
-    {km:23,calle:"Avenida Emilio Thuillier"},{km:24,calle:"Ciudad Jardín"},
-    {km:25,calle:"Avenida de Barcelona"},{km:26,calle:"Avenida Doctor Gálvez Ginachero"},
-    {km:27,calle:"Avenida Rosaleda"},{km:28,calle:"Avenida de Fátima"},
-    {km:29,calle:"Calle Ferrándiz"},{km:30,calle:"Calle Victoria"},
-    {km:31,calle:"Plaza de la Merced"},{km:32,calle:"Paseo de Reding"},
-    {km:33,calle:"Paseo Marítimo Pablo Ruiz Picasso"},{km:34,calle:"Baños del Carmen"},
-    {km:35,calle:"Playa de Pedregalejo"},{km:36,calle:"Playa del Palo"},
-    {km:37,calle:"Paseo Marítimo de El Palo"},{km:38,calle:"Paseo Marítimo Pablo Ruiz Picasso"},
-    {km:39,calle:"Paseo Marítimo Pablo Ruiz Picasso"},{km:40,calle:"Paseo del Parque"},
-    {km:42.195,calle:"META 🏁"}
-  ]},
-  "Hamburgo":{flag:"🇩🇪",puntos:[
-    {km:5,calle:"Elbchausee"},{km:6,calle:"Othmarschen"},{km:7,calle:"Hohenesch"},
-    {km:8,calle:"Große Elbstraße"},{km:9,calle:"Fischauktionshalle"},
-    {km:10,calle:"Kreuzfahrtterminal"},{km:11,calle:"Rotherbaum"},
-    {km:12,calle:"Altona Balkon"},{km:13,calle:"Stadthalle Altona"},
-    {km:14,calle:"Schulterblatt"},{km:15,calle:"Alsterufer"},
-    {km:16,calle:"Außenalster"},{km:17,calle:"Rondeel"},
-    {km:18,calle:"Harvestehuder Weg"},{km:19,calle:"Eppendorfer Baum"},
-    {km:20,calle:"Eppendorfer Landstraße"},{km:21,calle:"Eppendorf"},
-    {km:22,calle:"Rothenbaumchaussee"},{km:23,calle:"Stadtpark"},
-    {km:24,calle:"Jahnring"},{km:25,calle:"Winterhude"},
-    {km:26,calle:"Langenhorner Chaussee"},{km:27,calle:"Ohlsdorf"},
-    {km:28,calle:"Alsterdorf"},{km:29,calle:"Fuhlsbüttler Straße"},
-    {km:30,calle:"Friedhof Ohlsdorf"},{km:31,calle:"Mundsburg Tower"},
-    {km:32,calle:"Uhlenhorst"},{km:33,calle:"Uhlandstraße"},
-    {km:34,calle:"Hamburger Meile"},{km:35,calle:"Lübecker Straße"},
-    {km:36,calle:"Außenalster Nordufer"},{km:37,calle:"Rothenbaumchaussee"},
-    {km:38,calle:"Dammtor"},{km:39,calle:"Planten und Blomen"},
-    {km:40,calle:"Messehallen"},{km:42.195,calle:"META 🏁"}
-  ]},
-  "Tokio":{flag:"🇯🇵",puntos:[
-    {km:10,calle:"Hibiya / Chiyoda"},{km:11,calle:"35.70406, 139.77195"},
-    {km:12,calle:"35.69515, 139.77040"},{km:13,calle:"35.68733, 139.77377"},
-    {km:14,calle:"35.68665, 139.77920"},{km:15,calle:"35.68565, 139.78758"},
-    {km:16,calle:"35.69331, 139.78495"},{km:17,calle:"35.70151, 139.78908"},
-    {km:18,calle:"35.70858, 139.79585"},{km:19,calle:"35.70566, 139.79382"},
-    {km:20,calle:"35.70089, 139.79371"},{km:21,calle:"35.69409, 139.79771"},
-    {km:22,calle:"35.68508, 139.79853"},{km:23,calle:"35.67662, 139.79680"},
-    {km:24,calle:"35.67051, 139.79912"},{km:25,calle:"35.67713, 139.79706"},
-    {km:26,calle:"35.68564, 139.79839"},{km:27,calle:"35.69464, 139.79757"},
-    {km:28,calle:"35.70108, 139.79294"},{km:29,calle:"35.69627, 139.78574"},
-    {km:30,calle:"35.68774, 139.78662"},{km:31,calle:"35.68199, 139.78153"},
-    {km:32,calle:"35.68157, 139.77317"},{km:33,calle:"35.67378, 139.76765"},
-    {km:34,calle:"35.67461, 139.75939"},{km:35,calle:"35.66670, 139.75420"},
-    {km:36,calle:"35.65821, 139.75051"},{km:37,calle:"35.64926, 139.74906"},
-    {km:38,calle:"35.64926, 139.74895"},{km:39,calle:"35.65821, 139.75040"},
-    {km:40,calle:"35.66672, 139.75407"},{km:42.195,calle:"META 🏁"}
-  ]},
-  "Nueva York":{flag:"🇺🇸",puntos:[
-    {km:10,calle:"Fourth Ave. - 19th St"},{km:11,calle:"Fourth Ave. - 11th St"},
-    {km:12,calle:"Fourth Ave. - Degraw St"},{km:13,calle:"Lafayette Avenue"},
-    {km:14,calle:"Lafayette Avenue"},{km:15,calle:"Bedford Avenue"},
-    {km:16,calle:"Bedford Ave."},{km:17,calle:"Bedford Ave."},
-    {km:18,calle:"Pulaski Bridge"},{km:19,calle:"44th Drive / 21st"},
-    {km:20,calle:"21st Street"},{km:21,calle:"Queensboro Bridge"},
-    {km:22,calle:"59th Street"},{km:23,calle:"1st Avenue"},
-    {km:24,calle:"1st Avenue"},{km:25,calle:"1st Avenue"},
-    {km:26,calle:"1st Avenue"},{km:27,calle:"1st Avenue"},
-    {km:28,calle:"Willis Avenue Bridge"},{km:29,calle:"Alexander Avenue"},
-    {km:30,calle:"138th Street"},{km:31,calle:"Madison Ave. Bridge"},
-    {km:32,calle:"5th Avenue"},{km:33,calle:"5th Avenue"},
-    {km:34,calle:"5th Avenue"},{km:35,calle:"Central Park"},
-    {km:36,calle:"East Drive (Central Park)"},{km:37,calle:"West Drive (Central Park)"},
-    {km:38,calle:"Central Park South - 59th St"},
-    {km:39,calle:"Columbus Circle"},{km:40,calle:"Central Park"},
-    {km:42.195,calle:"META 🏁"}
-  ]}
+  "Barcelona":{flag:"🇪🇸",
+    coords:[[41.388015, 2.170115], [41.389472, 2.168543], [41.39064, 2.16988], [41.39234, 2.17214], [41.39407, 2.17441], [41.39453, 2.17594], [41.39538, 2.17634], [41.3961, 2.17714], [41.39832, 2.1801], [41.39922, 2.18111], [41.4007, 2.17921], [41.40174, 2.17803], [41.40148, 2.17729], [41.4001, 2.17545], [41.39759, 2.17208], [41.39253, 2.16537], [41.38987, 2.16185], [41.38784, 2.15907], [41.38526, 2.1557], [41.383188, 2.152945], [41.384967, 2.153052], [41.38858, 2.15783], [41.39243, 2.16296], [41.39672, 2.16863], [41.40008, 2.17318], [41.40395, 2.1783], [41.407, 2.18237], [41.41035, 2.18681], [41.41212, 2.18923], [41.41542, 2.19352], [41.41631, 2.19228], [41.41804, 2.1914], [41.42248, 2.19113], [41.420501, 2.186849], [41.41334, 2.18682], [41.41118, 2.1857], [41.40922, 2.18308], [41.40484, 2.17724], [41.40082, 2.17184], [41.39903, 2.1694], [41.3966, 2.16623], [41.39384, 2.16257], [41.39147, 2.15944], [41.38885, 2.15593], [41.38459, 2.15026], [41.381589, 2.152552], [41.387228, 2.16537], [41.38922, 2.16843], [41.38798, 2.17014], [41.38641, 2.16594], [41.38427, 2.16385], [41.38152, 2.16027], [41.37737, 2.15586], [41.380324, 2.160933], [41.376908, 2.160852], [41.37494, 2.16016], [41.37492, 2.16592], [41.3749, 2.16993], [41.3746, 2.17494], [41.37381, 2.17549], [41.37336, 2.17612], [41.37399, 2.17686], [41.37515, 2.17734], [41.37596, 2.17816], [41.3798, 2.18119], [41.38275, 2.18361], [41.3845, 2.18492], [41.388138, 2.182517], [41.393038, 2.189018], [41.38797, 2.195802], [41.38832, 2.19767], [41.38906, 2.1994], [41.39064, 2.20078], [41.39189, 2.20339], [41.39399, 2.20527], [41.39608, 2.20773], [41.39777, 2.20875], [41.4004, 2.21092], [41.40219, 2.21399], [41.40611, 2.21907], [41.40766, 2.21739], [41.40858, 2.2169], [41.41126, 2.21947], [41.41145, 2.21891], [41.41049, 2.21516], [41.40919, 2.20988], [41.4084, 2.20776], [41.409794, 2.213684], [41.402908, 2.204591], [41.394854, 2.193823], [41.390533, 2.199681], [41.388175, 2.1958], [41.395537, 2.186017], [41.396684, 2.182809], [41.388988, 2.172449], [41.391556, 2.179788], [41.390988, 2.180759]],
+    puntos:[{km:5,calle:"Travessera de les Corts"},{km:6,calle:"Travessera de les Corts"},{km:7,calle:"Av. de Joan XXIII"},{km:8,calle:"Av. Diagonal"},{km:9,calle:"Av. Diagonal"},{km:10,calle:"Carrer de Paris 45"},{km:11,calle:"Carrer de Tarragona"},{km:12,calle:"Gran Via de les Corts Catalanes"},{km:13,calle:"Gran Via de les Corts Catalanes"},{km:14,calle:"Passeig de Grácia 20"},{km:15,calle:"Carrer del Roselló"},{km:16,calle:"Carrer del Roselló 22"},{km:17,calle:"Carrer de Valencia"},{km:18,calle:"Av. Meridiana"},{km:19,calle:"Av. Meridiana"},{km:20,calle:"Av. Meridiana"},{km:21,calle:"Av. Meridiana"},{km:22,calle:"Av. Meridiana"},{km:23,calle:"Carrer de Huelva"},{km:24,calle:"Gran Via"},{km:25,calle:"Rambla de Prim"},{km:26,calle:"5 Av. Diagonal"},{km:27,calle:"Av. Diagonal"},{km:28,calle:"Av. Diagonal"},{km:29,calle:"Av. Diagonal"},{km:30,calle:"Av. Diagonal"},{km:31,calle:"5 Av. Diagonal"},{km:32,calle:"Passeig de Garcia Fária"},{km:33,calle:"Av. del Litoral"},{km:34,calle:"Av. del Litoral"},{km:35,calle:"Carrer de la Marina 39"},{km:36,calle:"Passeig de Pujades"},{km:37,calle:"Ronda de Sant Pere 19"},{km:38,calle:"Av. de la Catedral"},{km:39,calle:"Passeig de Colom"},{km:40,calle:"Av. del Parallel"},{km:42.195,calle:""}]
+  },
+  "Berlín":{flag:"🇩🇪",
+    coords:[[52.51521, 13.360292], [52.51469, 13.35193], [52.5151, 13.35047], [52.51468, 13.34913], [52.51378, 13.33853], [52.5135, 13.33423], [52.51277, 13.32325], [52.51385, 13.32259], [52.51462, 13.32249], [52.51534, 13.32304], [52.51727, 13.32477], [52.5208, 13.32767], [52.52206, 13.32859], [52.52261, 13.32933], [52.52376, 13.32992], [52.5244, 13.33355], [52.5254, 13.33816], [52.52553, 13.34155], [52.52477, 13.34776], [52.5238, 13.35496], [52.52314, 13.36055], [52.52159, 13.36928], [52.52169, 13.3753], [52.52272, 13.38046], [52.52383, 13.3873], [52.52616, 13.3874], [52.52725, 13.3876], [52.52811, 13.39178], [52.52939, 13.39734], [52.52965, 13.40203], [52.52941, 13.40548], [52.5284, 13.41103], [52.52694, 13.41541], [52.52563, 13.41836], [52.52421, 13.4186], [52.52276, 13.41691], [52.52088, 13.420446], [52.518913, 13.427902], [52.518135, 13.428439], [52.51679, 13.42704], [52.51391, 13.42447], [52.51234, 13.42309], [52.50977, 13.42119], [52.51101, 13.41647], [52.50936, 13.4152], [52.50399, 13.41096], [52.50231, 13.40966], [52.499593, 13.416529], [52.49847, 13.41851], [52.4963, 13.41981], [52.48998, 13.42388], [52.48649, 13.42411], [52.48731, 13.42132], [52.48818, 13.41461], [52.48952, 13.40548], [52.49076, 13.39919], [52.49239, 13.39091], [52.49378, 13.38345], [52.49191, 13.37746], [52.49199, 13.37428], [52.4932, 13.36828], [52.4944, 13.36134], [52.49112, 13.3607], [52.49044, 13.3586], [52.48956, 13.3497], [52.48827, 13.34495], [52.48483, 13.34501], [52.48282, 13.34505], [52.47959, 13.34494], [52.4787, 13.34406], [52.47621, 13.34095], [52.47038, 13.33398], [52.46942, 13.33188], [52.47097, 13.32944], [52.47128, 13.32836], [52.47157, 13.32357], [52.47139, 13.319], [52.46902, 13.31369], [52.46787, 13.30866], [52.46841, 13.30184], [52.47016, 13.29205], [52.47068, 13.28931], [52.47468, 13.28396], [52.47681, 13.28105], [52.47935, 13.28496], [52.48184, 13.28948], [52.48601, 13.29716], [52.48829, 13.30175], [52.48821, 13.3056], [52.48988, 13.31284], [52.49117, 13.31325], [52.49387, 13.31029], [52.4967, 13.31142], [52.49984, 13.31303], [52.50111, 13.31677], [52.50231, 13.32436], [52.50401, 13.33255], [52.50412, 13.33653], [52.50196, 13.34199], [52.50117, 13.34565], [52.500071, 13.351673], [52.498216, 13.360554], [52.49974, 13.36282], [52.50362, 13.36616], [52.50546, 13.36815], [52.5078, 13.36946], [52.50892, 13.37082], [52.50956, 13.37784], [52.51009, 13.38552], [52.510686, 13.392582], [52.512503, 13.396446], [52.5128, 13.39339], [52.514566, 13.386236], [52.516383, 13.381116], [52.516041, 13.373182]],
+    puntos:[{km:5,calle:"Alt Moabit"},{km:6,calle:"Alt Moabit"},{km:7,calle:"Otto von Bismarck Allee"},{km:8,calle:"Friedrichstraße"},{km:9,calle:"Torstraße"},{km:10,calle:"Torstraße"},{km:11,calle:"Otto-Braun-straße"},{km:12,calle:"Strausberger Platz"},{km:13,calle:"Lichtenbergstraße"},{km:14,calle:"Heinrich Heine Str."},{km:15,calle:"Kottbuser Tor"},{km:16,calle:"Kottbuser Damm"},{km:17,calle:"Hasenheide"},{km:18,calle:"Gneisenaustr."},{km:19,calle:"Gneisenaustr."},{km:20,calle:"Yorkstraße"},{km:21,calle:"Goebenstraße"},{km:22,calle:"Kleistpark"},{km:23,calle:"Martin-Luther Str."},{km:24,calle:"Hauptstraße"},{km:25,calle:"Hauptstraße"},{km:26,calle:"Wiesbadener Str."},{km:27,calle:"Breitenbach Platz"},{km:28,calle:"Lenzeallee"},{km:29,calle:"Roseneck Platz"},{km:30,calle:"Hohenzollerdamm"},{km:31,calle:"Hohenzollerdamm"},{km:32,calle:"Fehrberliner Platz"},{km:33,calle:"Konstanzer Straße"},{km:34,calle:"Kurfürstendamm"},{km:35,calle:"Tauentzienstr."},{km:36,calle:"Kleiststraße"},{km:37,calle:"Postdammer Straße"},{km:38,calle:"Postdamer Platz"},{km:39,calle:"Leipzieger Str."},{km:40,calle:"Jerusalemer Str."},{km:42.195,calle:""}]
+  },
+  "Frankfurt":{flag:"🇩🇪",
+    coords:[[50.112274, 8.654043], [50.11031, 8.65849], [50.10945, 8.66073], [50.11173, 8.66645], [50.11183, 8.66966], [50.1093, 8.67188], [50.11079, 8.67334], [50.11295, 8.67135], [50.1136, 8.67079], [50.11328, 8.66858], [50.11071, 8.66365], [50.10997, 8.65983], [50.11268, 8.65493], [50.11488, 8.65259], [50.11736, 8.65322], [50.11976, 8.65407], [50.1196, 8.65743], [50.1179, 8.66359], [50.114804, 8.672606], [50.11262, 8.67609], [50.11126, 8.67334], [50.11125, 8.6762], [50.113202, 8.678927], [50.11666, 8.67989], [50.11672, 8.67896], [50.1157, 8.67693], [50.114938, 8.672931], [50.118553, 8.670973], [50.12428, 8.67001], [50.12705, 8.67156], [50.1281, 8.67291], [50.12721, 8.67341], [50.125, 8.67489], [50.12154, 8.67567], [50.11965, 8.67786], [50.11713, 8.67929], [50.11794, 8.68387], [50.11811, 8.68733], [50.11619, 8.68756], [50.11121, 8.68803], [50.1074, 8.68772], [50.10744, 8.68456], [50.10544, 8.67783], [50.10174, 8.67511], [50.09757, 8.67058], [50.09286, 8.66504], [50.08901, 8.66046], [50.08842, 8.65265], [50.08735, 8.64982], [50.08631, 8.63865], [50.08499, 8.63494], [50.08421, 8.62143], [50.08489, 8.61756], [50.08667, 8.61206], [50.08637, 8.60225], [50.0868, 8.59446], [50.08638, 8.59195], [50.08601, 8.58932], [50.0873, 8.58157], [50.08914, 8.57585], [50.090096, 8.573138], [50.089629, 8.569378], [50.091398, 8.573012], [50.09589, 8.577224], [50.09486, 8.57388], [50.09784, 8.56804], [50.100314, 8.561183], [50.102511, 8.55636], [50.10329, 8.553075], [50.101717, 8.560345], [50.102257, 8.568865], [50.10305, 8.57697], [50.1, 8.58105], [50.09994, 8.58629], [50.10014, 8.60566], [50.10026, 8.61662], [50.10153, 8.62869], [50.102531, 8.639251], [50.107638, 8.640193], [50.108912, 8.649317], [50.11018, 8.65127], [50.11077, 8.65378], [50.10916, 8.65483], [50.10767, 8.65554], [50.10937, 8.66057], [50.11173, 8.66645], [50.11372, 8.66951], [50.114788, 8.67257], [50.11262, 8.67609], [50.11166, 8.6744], [50.11221, 8.677301], [50.11544, 8.67954], [50.11682, 8.67909], [50.11546, 8.67687], [50.115306, 8.671179], [50.11376, 8.66926], [50.11164, 8.66597], [50.110092, 8.6591], [50.112624, 8.652266]],
+    puntos:[{km:5,calle:"Bockenheimer Landstraße"},{km:6,calle:"Opernplatz"},{km:7,calle:"Kaiserstraße"},{km:8,calle:"Große Eschenheimer Straße"},{km:9,calle:"Reuterweg"},{km:10,calle:"Bremer Straße"},{km:11,calle:"Eschersheimer Landstraße"},{km:12,calle:"Bleichstraße"},{km:13,calle:"Kurt-Schuhmacher-Straße"},{km:14,calle:"Schaumainkai"},{km:15,calle:"Kennedyallee 49"},{km:16,calle:"Kennedyallee 147"},{km:17,calle:"Niederräder Landstraße"},{km:18,calle:"Bruchfeldstraße"},{km:19,calle:"Goldsteinstraße"},{km:20,calle:"Zur Frankenfurt"},{km:21,calle:"Zur Frankenfurt"},{km:22,calle:"Martinkirchstraße 22"},{km:23,calle:"Schwanheimer Ufer 126"},{km:24,calle:"Schwanheimer Brücke"},{km:25,calle:"Nieder Kirchweg"},{km:26,calle:"Mainzer Landstraße 793"},{km:27,calle:"Bolongarostraße"},{km:28,calle:"Ludwig-Scriba-Straße"},{km:29,calle:"Oeserstraße"},{km:30,calle:"Mainzer Landstraße 670"},{km:31,calle:"Mainzer Landstraße 587"},{km:32,calle:"Mainzer Landstraße 513"},{km:33,calle:"Mainzer Landstraße 401"},{km:34,calle:"Mainzer Landstraße 251"},{km:35,calle:"Europaallee"},{km:36,calle:"Platz der Republik"},{km:37,calle:"Mainzer Landstraße"},{km:38,calle:"Junghofstraße"},{km:39,calle:"Hauptwache"},{km:40,calle:"Fressgass"},{km:42.195,calle:"Festhalle"}]
+  },
+  "London":{flag:"🇬🇧",
+    coords:[[51.47313, 0.01172], [51.47413, 0.0204], [51.47515, 0.02669], [51.47492, 0.0333], [51.47583, 0.03867], [51.47772, 0.04187], [51.47906, 0.04529], [51.48006, 0.05109], [51.48129, 0.05771], [51.48322, 0.06218], [51.48599, 0.06296], [51.48839, 0.06278], [51.49141, 0.06166], [51.493519, 0.061623], [51.49348, 0.05791], [51.49283, 0.05319], [51.49232, 0.04898], [51.49247, 0.0453], [51.49065, 0.0404], [51.48882, 0.03553], [51.48788, 0.03127], [51.48688, 0.02314], [51.48651, 0.01835], [51.48609, 0.01499], [51.4863, 0.00894], [51.48482, 0.00359], [51.48237, -0.0046], [51.48303, -0.0094], [51.48144, -0.01156], [51.48088, -0.02184], [51.48202, -0.02798], [51.4843, -0.03274], [51.48678, -0.03614], [51.48958, -0.04146], [51.49256, -0.0461], [51.49387, -0.04527], [51.4952, 0.04549], [51.49718, -0.04576], [51.49904, -0.04529], [51.4973, -0.04142], [51.49686, -0.03882], [51.49965, -0.0354], [51.50366, -0.03597], [51.50566, -0.03927], [51.50438, -0.04581], [51.50086, -0.05162], [51.49901, -0.05611], [51.49815, -0.06788], [51.50042, -0.07373], [51.50418, -0.07632], [51.50873, -0.07394], [51.50849, -0.06956], [51.5093, -0.0621], [51.50957, -0.05462], [51.51028, -0.04495], [51.50949, -0.03616], [51.50929, -0.0287], [51.50749, -0.02751], [51.505242, -0.026581], [51.50197, -0.02593], [51.49716, -0.02581], [51.49424, -0.02488], [51.49111, -0.0237], [51.4885, -0.01916], [51.48836, -0.01347], [51.49044, -0.01429], [51.49452, -0.01429], [51.49741, -0.01383], [51.50027, -0.01715], [51.50158, -0.02369], [51.50388, -0.02501], [51.50366, -0.01739], [51.50492, -0.02235], [51.50557, -0.0222], [51.50455, -0.01441], [51.50558, -0.01109], [51.5068, -0.00932], [51.50799, -0.00875], [51.50885, -0.01213], [51.50911, -0.01883], [51.50898, -0.024], [51.51059, -0.02703], [51.51237, -0.03073], [51.51267, -0.03862], [51.51168, -0.04202], [51.51017, -0.04579], [51.50936, -0.0608], [51.50833, -0.0716], [51.50977, -0.0749], [51.50952, -0.07911], [51.50927, -0.08432], [51.51043, -0.09126], [51.510957, -0.10283], [51.51006, -0.11742], [51.50654, -0.12229], [51.50091, -0.12554], [51.50047, -0.13849], [51.50247, -0.13909]],
+    puntos:[{km:5,calle:"John Wilson Street"},{km:6,calle:"Woolwich Church Street"},{km:7,calle:"Wollwich Road"},{km:8,calle:"Wollwich Road"},{km:9,calle:"Trafalgar Road"},{km:10,calle:"Trafalgar Road"},{km:11,calle:"Creek Road"},{km:12,calle:"Lower Road"},{km:13,calle:"Lower Road"},{km:14,calle:"Surrey Quays Road"},{km:15,calle:"Quebec Way"},{km:16,calle:"Redriff Road"},{km:17,calle:"Brunel Road"},{km:18,calle:"Brunel Road"},{km:19,calle:"Jamaica Road"},{km:20,calle:"Tower Bridge"},{km:21,calle:"The Highway"},{km:22,calle:"The Highway"},{km:23,calle:"Narrow Street"},{km:24,calle:"Westferry Road"},{km:25,calle:"Westferry Road"},{km:26,calle:"Westferry Road"},{km:27,calle:"East Ferry Road"},{km:28,calle:"Marsh Wall"},{km:29,calle:"North Colonnade"},{km:30,calle:"North Colonnade"},{km:31,calle:"Aspen Way"},{km:32,calle:"Poplar High Street"},{km:33,calle:"West India Dock Road"},{km:34,calle:"Comercial Road"},{km:35,calle:"The Highway"},{km:36,calle:"The Highway"},{km:37,calle:"Lower Thames Street"},{km:38,calle:"Upper Thames Street"},{km:39,calle:"Victoria Embankment"},{km:40,calle:"Great Georg Street"},{km:42.195,calle:""}]
+  },
+  "París":{flag:"🇫🇷",
+    // Recorrido oficial Maratón París: salida Champs-Élysées, hacia Bastille, Bois de Vincennes, vuelta por Sena, Torre Eiffel, Bois de Boulogne, meta Av. Foch
+    coords:[[48.869599, 2.308137], [48.86657, 2.32193], [48.865285, 2.327292], [48.867665, 2.329617], [48.871038, 2.331913], [48.87269, 2.331097], [48.871137, 2.332406], [48.860042, 2.33335], [48.859026, 2.339916], [48.85892, 2.34704], [48.85566, 2.3594], [48.85398, 2.36476], [48.8533, 2.3701], [48.85058, 2.37948], [48.8501, 2.38457], [48.83976, 2.39559], [48.83471, 2.40906], [48.832974, 2.414244], [48.830435, 2.41804], [48.828704, 2.419252], [48.829715, 2.420243], [48.832993, 2.420339], [48.83564, 2.4217], [48.83813, 2.42633], [48.84002, 2.43238], [48.84011, 2.43662], [48.83285, 2.44667], [48.827199, 2.454308], [48.825612, 2.455954], [48.823779, 2.457548], [48.822048, 2.454222], [48.820592, 2.451416], [48.820275, 2.448436], [48.820452, 2.445197], [48.81908, 2.44379], [48.81873, 2.44132], [48.82007, 2.43559], [48.82297, 2.43102], [48.82432, 2.41843], [48.8253, 2.40963], [48.828382, 2.405062], [48.82979, 2.4015], [48.836419, 2.391973], [48.84175, 2.38675], [48.85274, 2.36922], [48.851768, 2.361588], [48.85344, 2.35682], [48.85624, 2.34963], [48.85892, 2.33892], [48.8612, 2.32901], [48.86458, 2.30403], [48.8628, 2.29472], [48.85003, 2.27634], [48.84379, 2.27006], [48.84169, 2.26686], [48.84105, 2.26434], [48.84288, 2.26037], [48.84449, 2.25868], [48.845355, 2.257533], [48.845413, 2.255395], [48.84588, 2.249283], [48.848092, 2.242751], [48.848683, 2.2421], [48.853957, 2.241824], [48.85662, 2.24359], [48.85857, 2.24488], [48.858323, 2.246085], [48.857904, 2.249679], [48.857999, 2.252107], [48.858472, 2.25743], [48.858417, 2.260145], [48.857354, 2.264662], [48.857064, 2.266749], [48.85832, 2.270237], [48.858203, 2.273709], [48.859477, 2.278012], [48.86191, 2.286116], [48.862749, 2.286513], [48.863365, 2.286791], [48.869457, 2.285395], [48.870104, 2.283359], [48.871846, 2.276966], [48.872172, 2.279941]],
+    puntos:[{km:2,calle:"Av. des Champs-Élysées"},{km:5,calle:"Rue St-Antoine"},{km:6,calle:"R. du Faubourg St-Antonie"},{km:7,calle:"Rue De Reuilly"},{km:8,calle:"Avenue Daumesnil"},{km:9,calle:"Avenue Daumesnil"},{km:10,calle:"Av. de St.-Maurice"},{km:11,calle:"Av. de Daumesnil"},{km:12,calle:"Route de la Pyramide"},{km:13,calle:"Route de la Pyramide"},{km:14,calle:"Route St-Hubert"},{km:15,calle:"Route de Pesage"},{km:16,calle:"Avenue de Gravelle"},{km:17,calle:"Avenue de Gravelle"},{km:18,calle:"Avenue de Gravelle"},{km:19,calle:"Av. de la Porte de Charenton"},{km:20,calle:"Rue de Charenton"},{km:21,calle:"Avenue Daumesnil"},{km:22,calle:"Avenue Daumesnil"},{km:23,calle:"Boulevard Bourdon"},{km:24,calle:"Quai des Celestins"},{km:25,calle:"Voies Geoges Pompidou"},{km:26,calle:"Voies Geoges Pompidou"},{km:27,calle:"Voies Geoges Pompidou"},{km:28,calle:"Voies Geoges Pompidou"},{km:29,calle:"Av. President Kennedy"},{km:30,calle:"Av. President Kennedy"},{km:31,calle:"Rue Mirabeau"},{km:32,calle:"Rue Molitor"},{km:33,calle:"Boulevard de Auteul"},{km:34,calle:"Av. Porte de Auteul"},{km:35,calle:"Al. des Fortification"},{km:36,calle:"Al. des Fortification"},{km:37,calle:"Av. de St-Cloud"},{km:38,calle:"Allee de la Reine Marguerite"},{km:39,calle:"Allee de la Reine Marguerite"},{km:40,calle:"Allee de Longchamp"},{km:42.195,calle:""}]
+  },
+  "Valencia":{flag:"🇪🇸",
+    coords:[[39.456536739439, -0.35566668599192], [39.45766, -0.35435], [39.45959, -0.35358], [39.46042, -0.35286], [39.46147, -0.35683], [39.46314, -0.35847], [39.4639, -0.35769], [39.46122, -0.34909], [39.45963, -0.34265], [39.45885, -0.3354], [39.45998, -0.33284], [39.46204, -0.33062], [39.46285, -0.32901], [39.46317, -0.32596], [39.46349, -0.32484], [39.46737, -0.32505], [39.46784, -0.32548], [39.47441, -0.32554], [39.47479, -0.32718], [39.47621, -0.33225], [39.47689, -0.33461], [39.48041, -0.34686], [39.4811, -0.35012], [39.47889, -0.34252], [39.47565, -0.33359], [39.47147, -0.33439], [39.47044, -0.3354], [39.47137, -0.338], [39.47425, -0.34783], [39.47633, -0.35497], [39.47925, -0.35386], [39.48091, -0.35289], [39.4821, -0.35162], [39.48562, -0.3523], [39.48817, -0.35335], [39.49288, -0.35644], [39.49352, -0.35864], [39.49127, -0.36051], [39.48568, -0.36328], [39.48059, -0.36583], [39.47665, -0.36707], [39.47074, -0.36234], [39.46911, -0.36049], [39.46939, -0.35902], [39.47313, -0.35691], [39.47536, -0.3529], [39.47367, -0.34768], [39.47126, -0.33973], [39.46989, -0.3344], [39.47307, -0.33394], [39.47602, -0.33236], [39.47396, -0.32788], [39.46389, -0.32938], [39.46271, -0.33039], [39.46158, -0.33806], [39.46412, -0.34662], [39.46831, -0.36059], [39.4689, -0.36131], [39.47061, -0.36242], [39.47688, -0.36753], [39.47867, -0.37076], [39.48017, -0.37388], [39.47828, -0.37321], [39.47419, -0.36977], [39.47354, -0.37423], [39.47038, -0.37578], [39.4697, -0.3783], [39.47033, -0.38339], [39.47283, -0.38658], [39.47978, -0.39188], [39.47889, -0.39847], [39.4828, -0.4016], [39.4804, -0.40694], [39.4728, -0.4054], [39.46802, -0.40585], [39.46281, -0.40525], [39.45847, -0.40202], [39.46087, -0.3994], [39.46747, -0.39262], [39.4656, -0.38218], [39.4681, -0.37935], [39.47015, -0.37057], [39.47219, -0.36816], [39.4701, -0.3648], [39.46668, -0.3626], [39.45944, -0.35845], [39.457355580707, -0.35369496642686]],
+    puntos:[{km:5,calle:"Avenida del Tarongers"},{km:6,calle:"Avenida del Tarongers"},{km:7,calle:"Avenida del Tarongers"},{km:8,calle:"Avenida Blasco Ibañez"},{km:9,calle:"Avenida de Catalunya"},{km:10,calle:"Bulevar periférico norte"},{km:11,calle:"Avenida Alfahuir"},{km:12,calle:"Calle de Dolores Marqués"},{km:13,calle:"Calle Botánico Cabanillas"},{km:14,calle:"Passeig de l'Albereda"},{km:15,calle:"Avenida Aragón"},{km:16,calle:"Avenida de Blasco Ibañez"},{km:17,calle:"Avenida de Blasco Ibañez"},{km:18,calle:"Calle Ramón Llull"},{km:19,calle:"Avenida del Tarongers"},{km:20,calle:"Calle Reina 66"},{km:21,calle:"Calle Reina"},{km:22,calle:"Avenida del Port"},{km:23,calle:"Avenida del Port"},{km:24,calle:"Calle Eduardo Boscà"},{km:25,calle:"Plaza Saragossa"},{km:26,calle:"Plaza del Real"},{km:27,calle:"Calle Gaudalaviar"},{km:28,calle:"Calle de les Blanquiers"},{km:29,calle:"Plaza Poeta Llorente"},{km:30,calle:"Calle Poeta Querol"},{km:31,calle:"Calle Guillem de Castro"},{km:32,calle:"Gran Via de Ferran el Catòlico"},{km:33,calle:"Calle Vall De la Ballestera"},{km:34,calle:"Avenida Pio Baroja"},{km:35,calle:"Avenida Tres Cruces"},{km:36,calle:"Avenida Tres Cruces"},{km:37,calle:"Calle del Archiduque Carlos"},{km:38,calle:"Avenida del Cid"},{km:39,calle:"Calle Xàtiva"},{km:40,calle:"Calle Colom"},{km:42.195,calle:""}]
+  },
+  "Rom":{flag:"🇮🇹",
+    coords:[
+        [41.89242, 12.488713],
+        [41.889361, 12.493649],
+        [41.888864, 12.490818],
+        [41.884174, 12.489108],
+        [41.876675, 12.482018],
+        [41.871964, 12.491176],
+        [41.871202, 12.495306],
+        [41.86834, 12.49603],
+        [41.86733, 12.49452],
+        [41.86735, 12.4859],
+        [41.86778, 12.47941],
+        [41.86412, 12.47862],
+        [41.86187, 12.47832],
+        [41.857099, 12.477478],
+        [41.8524, 12.47521],
+        [41.85605, 12.47168],
+        [41.86028, 12.47048],
+        [41.86192, 12.47298],
+        [41.86374, 12.47521],
+        [41.86565, 12.47489],
+        [41.867, 12.47381],
+        [41.8689, 12.4726],
+        [41.871326, 12.469125],
+        [41.87587, 12.47127],
+        [41.87685, 12.47444],
+        [41.88, 12.47828],
+        [41.88294, 12.47634],
+        [41.88633, 12.47971],
+        [41.88846, 12.48045],
+        [41.89045, 12.47962],
+        [41.89185, 12.47748],
+        [41.8918, 12.47315],
+        [41.89455, 12.46897],
+        [41.89931, 12.46432],
+        [41.900829, 12.464818],
+        [41.90334, 12.457664],
+        [41.90578, 12.46295],
+        [41.90429, 12.473015],
+        [41.90569, 12.47517],
+        [41.90766, 12.47474],
+        [41.90989, 12.47306],
+        [41.91029, 12.46164],
+        [41.91119, 12.45828],
+        [41.91176, 12.45458],
+        [41.91602, 12.45409],
+        [41.91594, 12.4558],
+        [41.91497, 12.45914],
+        [41.915553, 12.462927],
+        [41.91928, 12.46152],
+        [41.91989, 12.46301],
+        [41.918662, 12.468775],
+        [41.92094, 12.4681],
+        [41.92209, 12.46314],
+        [41.9233, 12.46095],
+        [41.92442, 12.45861],
+        [41.92968, 12.45869],
+        [41.93106, 12.45915],
+        [41.93095, 12.46258],
+        [41.93357, 12.46535],
+        [41.93501, 12.46929],
+        [41.93543, 12.47645],
+        [41.9345, 12.47881],
+        [41.93349, 12.4789],
+        [41.93293, 12.47719],
+        [41.93247, 12.47625],
+        [41.93027, 12.47615],
+        [41.931943, 12.470947],
+        [41.92666, 12.46977],
+        [41.92507, 12.46772],
+        [41.92849, 12.46324],
+        [41.92564, 12.46195],
+        [41.92365, 12.46614],
+        [41.921461, 12.470574],
+        [41.912677, 12.472474],
+        [41.906649, 12.475489],
+        [41.90812, 12.477436],
+        [41.910505, 12.476778],
+        [41.902609, 12.48457],
+        [41.90362, 12.47637],
+        [41.90216, 12.4723],
+        [41.90153, 12.47198],
+        [41.899963, 12.472905],
+        [41.89691, 12.47422],
+        [41.89618, 12.47618],
+        [41.89595, 12.47768],
+        [41.89361, 12.48179],
+        [41.89183, 12.48029],
+        [41.888945, 12.482014],
+        [41.888467, 12.490232],
+        [41.892403, 12.488718]
+      ],
+    puntos:[{km:5,calle:"Viale Ostiense"},{km:6,calle:"Viale Ferdinando Baldelli, 41"},{km:7,calle:"Viale Marconi"},{km:8,calle:"Lungotevere di Pietra Papa"},{km:9,calle:"Lungotevere Vittorio Gassman"},{km:10,calle:"Largo Marzi"},{km:11,calle:"Via Galvani"},{km:12,calle:"Lungotevere Aventino"},{km:13,calle:"Via della Greca"},{km:14,calle:"Lungotevere dei Vallati, 4"},{km:15,calle:"Piazza di Ponte Sant'angelo"},{km:16,calle:"Lungotevere Marzio, 11"},{km:17,calle:"Via Crescenzio, 16"},{km:18,calle:"Via di Porta Angelica, 10"},{km:19,calle:"Via Cola di Rienzo, 127"},{km:20,calle:"Viale Giulio Cesare"},{km:21,calle:"Via della Giuliana, 66"},{km:22,calle:"Viale Giuseppe Mazzini, 69"},{km:23,calle:"Via Marcello Prestinari, 15"},{km:24,calle:"Lungotevere della Vittoria"},{km:25,calle:"Lungotevere Grande Ammiraglio Thaon di Revel"},{km:26,calle:"Piazzale Cardinale Consalvi"},{km:27,calle:"Lungotevere Acqua Acetosa"},{km:28,calle:"Via dei Campi Sportivi"},{km:29,calle:"Piazzale del Parco della Rimembranza"},{km:30,calle:"Viale XVII Olimpiade"},{km:31,calle:"Via Flaminia, 337"},{km:32,calle:"Via Pier della Francesca"},{km:33,calle:"Lungotevere Flaminio, 67"},{km:34,calle:"Lungotevere Flaminio, 4"},{km:35,calle:"Lungotevere Arnaldo da Brescia"},{km:36,calle:"Via di Monte Brianzo, 12"},{km:37,calle:"Corso Vittorio Emanuele II, 91"},{km:38,calle:"Via del Corso, 340"},{km:39,calle:"Via del Corso, 519"},{km:40,calle:"Piazza di Spagna"},{km:42.195,calle:""}]
+  },
+  "Sevilla":{flag:"🇪🇸",
+    coords:[
+        [37.373479, -5.990398],
+        [37.38737, -6.00145],
+        [37.38875, -6.00225],
+        [37.39336, -6.00377],
+        [37.39536, -6.00291],
+        [37.40068, -5.99855],
+        [37.4036, -5.99604],
+        [37.40859, -5.99623],
+        [37.41106, -5.99879],
+        [37.41218, -6.00109],
+        [37.41241, -6.00149],
+        [37.41216, -6.0017],
+        [37.39975, -6.00481],
+        [37.39535, -6.00791],
+        [37.391241, -6.011099],
+        [37.38575, -6.01126],
+        [37.38345, -6.01097],
+        [37.381479, -6.009549],
+        [37.375002, -6.007577],
+        [37.373788, -6.008895],
+        [37.37202, -6.00705],
+        [37.37231, -6.00359],
+        [37.373906, -6.003849],
+        [37.37475, -5.99538],
+        [37.375686, -5.991758],
+        [37.38288, -5.9963],
+        [37.38803, -6.00209],
+        [37.39048, -6.00274],
+        [37.39389, -6.00356],
+        [37.39678, -6.0017],
+        [37.40305, -5.99605],
+        [37.41275, -5.988645],
+        [37.41336, -5.98313],
+        [37.41564, -5.9748],
+        [37.41545, -5.97411],
+        [37.404496, -5.968805],
+        [37.40155, -5.973824],
+        [37.397181, -5.97553],
+        [37.39458, -5.97681],
+        [37.392166, -5.977768],
+        [37.388248, -5.982121],
+        [37.3872, -5.97829],
+        [37.387551, -5.972437],
+        [37.38977, -5.97458],
+        [37.3904, -5.9743],
+        [37.39423, -5.96293],
+        [37.39155, -5.95993],
+        [37.3902, -5.95927],
+        [37.38754, -5.95943],
+        [37.38187, -5.96573],
+        [37.38147, -5.96541],
+        [37.38119, -5.9658],
+        [37.37493, -5.9674],
+        [37.3731, -5.96881],
+        [37.3734, -5.97193],
+        [37.37314, -5.97327],
+        [37.3724, -5.97635],
+        [37.36962, -5.9781],
+        [37.368333, -5.984124],
+        [37.362818, -5.982467],
+        [37.35772, -5.98093],
+        [37.36906, -5.98751],
+        [37.36955, -5.98554],
+        [37.3741, -5.98613],
+        [37.376553, -5.986697],
+        [37.37686, -5.98641],
+        [37.37763, -5.98707],
+        [37.377107, -5.987326],
+        [37.378955, -5.989174],
+        [37.3795, -5.98309],
+        [37.381615, -5.9836],
+        [37.386534, -5.98317],
+        [37.388715, -5.983486],
+        [37.39046, -5.98411],
+        [37.39307, -5.984],
+        [37.3969, -5.9817],
+        [37.39852, -5.98165],
+        [37.39934, -5.98287],
+        [37.40197, -5.9859],
+        [37.4031, -5.98852],
+        [37.4029, -5.99492],
+        [37.39986, -5.99384],
+        [37.39686, -5.99437],
+        [37.393851, -5.995282],
+        [37.39271, -5.99542],
+        [37.390945, -5.995346],
+        [37.388385, -5.994893],
+        [37.382809, -5.993475],
+        [37.38082, -5.98881],
+        [37.373491, -5.990329]
+      ],
+    puntos:[{km:5,calle:"Paseo de las Delicias"},{km:6,calle:"Glorieta de San Diego"},{km:7,calle:"Avenida de la Borbolla"},{km:8,calle:"Calle San Fernando"},{km:9,calle:"Avenida de la Constitución"},{km:10,calle:"Glorieta Carlos Cano"},{km:11,calle:"C. Virgen de Luján, 50"},{km:12,calle:"Gta. de los Marineros"},{km:13,calle:"P.º de Cristóbal Colón, 23-21"},{km:14,calle:"Estación Autobuses Plaza de Armas"},{km:15,calle:"Calle Torneo 46"},{km:16,calle:"Av. Concejal Alberto Jiménez-Becerril"},{km:17,calle:"Av. Juventudes Musicales"},{km:18,calle:"Ronda Urbana Norte"},{km:19,calle:"Av. del Alcalde Manuel del Valle"},{km:20,calle:"Ctra. de Carmona, 45A"},{km:21,calle:"Ctra. de Carmona, 18"},{km:22,calle:"C. Juan Antonio Cavestany"},{km:23,calle:"Av. de Kansas City"},{km:24,calle:"Av. de Kansas City 31-21"},{km:25,calle:"C. de la Ada, 41007"},{km:26,calle:"Av. de Andalucía, 1"},{km:27,calle:"Av. de la Ciudad Jardín, 45-27"},{km:28,calle:"Av. Alcalde Juan Fernandez"},{km:29,calle:"Cardenal Bueno Monreal, 28-34"},{km:30,calle:"Av. Manuel Siurot, 18-20"},{km:31,calle:"Glorieta Plus Ultra, 1"},{km:32,calle:"Av. de la Palmera, 42-46"},{km:33,calle:"Av. de la Borbolla, 59"},{km:34,calle:"Gta. San Diego"},{km:35,calle:"C. Juan de Mata Carriazo 5"},{km:36,calle:"C. Luis Montoto, 2-10"},{km:37,calle:"Rda. de Capuchinos, 37-35"},{km:38,calle:"Avenida de la Buharia"},{km:39,calle:"Avenida Eduardo Dato"},{km:40,calle:"C. Tetuán, 19, Casco Antiguo"},{km:42.195,calle:""}]
+  },
+  "Hamburg":{flag:"🇩🇪",
+    coords:[[53.561061, 9.975504], [53.56008, 9.97542], [53.55882, 9.97549], [53.55835, 9.97587], [53.55775, 9.9765], [53.55717, 9.97615], [53.55638, 9.97513], [53.55503, 9.97374], [53.55107, 9.97016], [53.55009, 9.96861], [53.54953, 9.9607], [53.54967, 9.95376], [53.54856, 9.94567], [53.54782, 9.93086], [53.54793, 9.92399], [53.54885, 9.91419], [53.54971, 9.90201], [53.54899, 9.89761], [53.54617, 9.8971], [53.54542, 9.90396], [53.54613, 9.91316], [53.54616, 9.92159], [53.54644, 9.92979], [53.54613, 9.94156], [53.54633, 9.95065], [53.5456, 9.955], [53.54648, 9.96334], [53.54597, 9.96937], [53.54416, 9.97612], [53.54408, 9.9809], [53.54503, 9.98561], [53.54504, 9.99338], [53.5471, 9.99999], [53.549516, 10.006082], [53.553844, 10.003819], [53.555208, 10.000241], [53.553, 9.9965], [53.554216, 9.991076], [53.557712, 9.99363], [53.55783, 9.99762], [53.557492, 10.004111], [53.55983, 10.01021], [53.562953, 10.015356], [53.567561, 10.016312], [53.57004, 10.00996], [53.57442, 10.00756], [53.5756, 10.01072], [53.5806, 10.00771], [53.58585, 10.00372], [53.588352, 10.004198], [53.59318, 10.01195], [53.59163, 10.02132], [53.59123, 10.02983], [53.596182, 10.031609], [53.599957, 10.041204], [53.60437, 10.04023], [53.608233, 10.038594], [53.607212, 10.03182], [53.606221, 10.024459], [53.606895, 10.020852], [53.60541, 10.018032], [53.610036, 10.011718], [53.612787, 10.013571], [53.61744, 10.02376], [53.619469, 10.030077], [53.62266, 10.02836], [53.61964, 10.02334], [53.61655, 10.01382], [53.61381, 10.00328], [53.61188, 10.00073], [53.60906, 9.99877], [53.6052, 9.99721], [53.60112, 9.99411], [53.59757, 9.99434], [53.59336, 9.99434], [53.593119, 9.989312], [53.58996, 9.98712], [53.58508, 9.98171], [53.5821, 9.98761], [53.57985, 9.99343], [53.5781, 9.99807], [53.5748, 9.99939], [53.56804, 10.00102], [53.5653, 9.99487], [53.56148, 9.99218], [53.55827, 9.98795], [53.55607, 9.97992], [53.55755, 9.97686], [53.55993, 9.97548], [53.56102, 9.97567]],
+    puntos:[{km:5,calle:"Elbchausee"},{km:6,calle:"Othmarschen"},{km:7,calle:"Hohenesch"},{km:8,calle:"Große Elbstraße"},{km:9,calle:"Fischauktionshalle"},{km:10,calle:"Kreuzfahrtterminal"},{km:11,calle:"Rotherbaum"},{km:12,calle:"Altona Balkon"},{km:13,calle:"Stadthalle Altona"},{km:14,calle:"Schulterblatt"},{km:15,calle:"Alsterufer"},{km:16,calle:"Außenalster"},{km:17,calle:"Rondeel"},{km:18,calle:"Harvestehuder Weg"},{km:19,calle:"Eppendorfer Baum"},{km:20,calle:"Eppendorfer Landstraße"},{km:21,calle:"Eppendorf"},{km:22,calle:"Rothenbaumchaussee"},{km:23,calle:"Stadtpark"},{km:24,calle:"Jahnring"},{km:25,calle:"Winterhude"},{km:26,calle:"Langenhorner Chaussee"},{km:27,calle:"Ohlsdorf"},{km:28,calle:"Alsterdorf"},{km:29,calle:"Fuhlsbüttler Straße"},{km:30,calle:"Friedhof Ohlsdorf"},{km:31,calle:"Mundsburg Tower"},{km:32,calle:"Uhlenhorst"},{km:33,calle:"Uhlandstraße"},{km:34,calle:"Hamburger Meile"},{km:35,calle:"Lübecker Straße"},{km:36,calle:"Außenalster Nordufer"},{km:37,calle:"Rothenbaumchaussee"},{km:38,calle:"Dammtor"},{km:39,calle:"Planten und Blomen"},{km:40,calle:"Messehallen"},{km:42.195,calle:""}]
+  },
+  "Tokyo":{flag:"🇯🇵",
+    coords:[
+          [35.689939, 139.692341],
+          [35.68775, 139.694097],
+          [35.692502, 139.694203],
+          [35.692163, 139.696566],
+          [35.693564, 139.699957],
+          [35.692846, 139.704024],
+          [35.691727, 139.70973],
+          [35.691699, 139.719168],
+          [35.692257, 139.724314],
+          [35.691335, 139.72796],
+          [35.691321, 139.732046],
+          [35.692875, 139.73609],
+          [35.695422, 139.738647],
+          [35.69864, 139.741231],
+          [35.702741, 139.745193],
+          [35.703011, 139.750359],
+          [35.701937, 139.755229],
+          [35.698991, 139.756587],
+          [35.69547, 139.761446],
+          [35.695047, 139.766359],
+          [35.695948, 139.770374],
+          [35.699703, 139.771302],
+          [35.703406, 139.771737],
+          [35.706141, 139.772237],
+          [35.705493, 139.772125],
+          [35.702128, 139.77174],
+          [35.699875, 139.771459],
+          [35.695695, 139.770514],
+          [35.692984, 139.771255],
+          [35.690106, 139.772402],
+          [35.686006, 139.774044],
+          [35.683419, 139.774255],
+          [35.681747, 139.775902],
+          [35.680843, 139.780619],
+          [35.682503, 139.781751],
+          [35.684036, 139.784788],
+          [35.685263, 139.787241],
+          [35.686838, 139.787193],
+          [35.692325, 139.784831],
+          [35.696549, 139.785781],
+          [35.699154, 139.78743],
+          [35.701886, 139.789335],
+          [35.703966, 139.791728],
+          [35.705729, 139.793892],
+          [35.708491, 139.795803],
+          [35.709804, 139.796993],
+          [35.707077, 139.794973],
+          [35.704315, 139.792361],
+          [35.702042, 139.789686],
+          [35.701431, 139.790638],
+          [35.700354, 139.788398],
+          [35.698002, 139.786817],
+          [35.695481, 139.785407],
+          [35.692487, 139.78501],
+          [35.690546, 139.78476],
+          [35.687527, 139.786795],
+          [35.685347, 139.787665],
+          [35.683581, 139.784133],
+          [35.682555, 139.782095],
+          [35.680482, 139.780503],
+          [35.680101, 139.779698],
+          [35.681073, 139.777206],
+          [35.682148, 139.774448],
+          [35.680185, 139.772262],
+          [35.676359, 139.769786],
+          [35.673644, 139.767492],
+          [35.671596, 139.764695],
+          [35.674094, 139.76073],
+          [35.673761, 139.758508],
+          [35.671899, 139.757042],
+          [35.668082, 139.754853],
+          [35.665163, 139.753491],
+          [35.662002, 139.752024],
+          [35.659092, 139.750678],
+          [35.655971, 139.750171],
+          [35.650622, 139.749303],
+          [35.647361, 139.748047],
+          [35.646322, 139.746356],
+          [35.650021, 139.749101],
+          [35.653391, 139.749664],
+          [35.65738, 139.750248],
+          [35.661075, 139.75146],
+          [35.664101, 139.752864],
+          [35.667894, 139.754625],
+          [35.670556, 139.75599],
+          [35.672554, 139.757219],
+          [35.674905, 139.759478],
+          [35.674573, 139.761014],
+          [35.676591, 139.761671],
+          [35.679348, 139.762584],
+          [35.682239, 139.762115]
+        ],
+    puntos:[{km:10,calle:"Hibiya / Chiyoda"},{km:15,calle:"Koto City"},{km:20,calle:"Kiba Park"},{km:25,calle:"Tsukishima"},{km:30,calle:"Shinonome"},{km:35,calle:"Tatsumi"},{km:40,calle:"Harumi"},{km:42.195,calle:""}]
+  },
+  "New York":{flag:"🇺🇸",
+    coords:[[40.601905, -74.059344], [40.603608, -74.053795], [40.604544, -74.050891], [40.606107, -74.046119], [40.60758, -74.041586], [40.6092, -74.036623], [40.610499, -74.032542], [40.611461, -74.03007], [40.612771, -74.028786], [40.614205, -74.027767], [40.614938, -74.02693], [40.61608, -74.02576], [40.61722, -74.02793], [40.61891, -74.02995], [40.62543, -74.02729], [40.63598, -74.02297], [40.63789, -74.02144], [40.64082, -74.01837], [40.64904, -74.00981], [40.65148, -74.00728], [40.655, -74.00361], [40.65834, -74.00013], [40.66445, -73.9938], [40.66897, -73.98979], [40.67374, -73.98581], [40.67787, -73.9834], [40.684863, -73.978089], [40.68694, -73.97716], [40.68753, -73.97184], [40.68841, -73.96419], [40.68945, -73.95512], [40.69849, -73.9569], [40.70083, -73.95743], [40.70409, -73.96107], [40.70739, -73.96445], [40.71027, -73.9639], [40.71432, -73.96142], [40.72285, -73.95234], [40.72851, -73.9535], [40.730459, -73.951564], [40.73466, -73.952315], [40.740492, -73.952187], [40.74442, -73.95354], [40.74855, -73.952], [40.7488, -73.95088], [40.749154, -73.941921], [40.751058, -73.941052], [40.75376, -73.94719], [40.75827, -73.95755], [40.760106, -73.963038], [40.76274, -73.95968], [40.76962, -73.95469], [40.77518, -73.9506], [40.78007, -73.94702], [40.78751, -73.9416], [40.79283, -73.93774], [40.79638, -73.93515], [40.8003, -73.93227], [40.80297, -73.93001], [40.80545, -73.925485], [40.808146, -73.926461], [40.81335, -73.926699], [40.81288, -73.9296], [40.81423, -73.93442], [40.81264, -73.93775], [40.80619, -73.94246], [40.80643, -73.94438], [40.8039, -73.94619], [40.80186, -73.94562], [40.79863, -73.94796], [40.79209, -73.95272], [40.784113, -73.958575], [40.78173, -73.96076], [40.78128, -73.96375], [40.77959, -73.96505], [40.77791, -73.96667], [40.77581, -73.96729], [40.77489, -73.96847], [40.77372, -73.96914], [40.77281, -73.96881], [40.77151, -73.96967], [40.7706, -73.97101], [40.76945, -73.97247], [40.76779, -73.97314], [40.76643, -73.97261], [40.764601, -73.973615], [40.767631, -73.980808], [40.76871, -73.98031], [40.76963, -73.97969], [40.77148, -73.97745], [40.7729, -73.97655]],
+    puntos:[{km:10,calle:"Fourth Ave. - 19th St"},{km:15,calle:"Bedford Avenue"},{km:20,calle:"21st Street"},{km:21,calle:"Queensboro Bridge"},{km:25,calle:"1st Avenue"},{km:30,calle:"138th Street"},{km:35,calle:"Central Park"},{km:40,calle:"Central Park"},{km:42.195,calle:""}]
+  }
 };
 
 const KM=42.195;
 let C=JSON.parse(localStorage.getItem('mt_v5_es')||'[]');
 let ca=null,timerSeg=null,pt=[],ciudadSel=null;
+let leafletMap=null,mapCiudadActual=null;
+
 function sv(){localStorage.setItem('mt_v5_es',JSON.stringify(C));}
 function pad(n){return String(Math.floor(Math.abs(n))).padStart(2,'0');}
 function ph(s){
@@ -616,12 +740,122 @@ function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
-  const m={lista:0,ficha:1,seguimiento:2,pronostico:3};
+  const m={lista:0,ficha:1,seguimiento:2,pronostico:3,mapa:4};
   if(m[id]!==undefined)document.querySelectorAll('.nav-btn')[m[id]].classList.add('active');
   if(id==='lista')rL();
   if(id==='pronostico'){rPS();calcProno();}
+  if(id==='mapa'){initMapa();}
 }
 
+// ===================== MAPA =====================
+function buildMapaCitySelector(){
+  const g=document.getElementById('mapa-city-selector');
+  g.innerHTML=Object.entries(CIUDADES).map(([name,d])=>
+    `<button class="mapa-city-btn" id="mcbtn-${name}" onclick="loadMapaCiudad('${name}')">${d.flag} ${name}</button>`
+  ).join('');
+  // Auto-seleccionar si hay corredor activo con ciudad
+  if(ca!==null&&C[ca]&&C[ca].ciudad){
+    loadMapaCiudad(C[ca].ciudad);
+  }
+}
+
+function initMapa(){
+  buildMapaCitySelector();
+  if(!leafletMap){
+    leafletMap=L.map('leaflet-map').setView([48.8584,2.2945],12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+      attribution:'© OpenStreetMap contributors',maxZoom:19
+    }).addTo(leafletMap);
+    document.getElementById('map-no-city').style.display='flex';
+  }
+  // Si hay ciudad ya cargada, re-fit
+  if(mapCiudadActual){
+    setTimeout(()=>leafletMap.invalidateSize(),100);
+  }
+}
+
+let mapaLayers=[];
+function clearMapaLayers(){
+  mapaLayers.forEach(l=>leafletMap.removeLayer(l));
+  mapaLayers=[];
+}
+
+function loadMapaCiudad(name){
+  if(!leafletMap)return;
+  document.querySelectorAll('.mapa-city-btn').forEach(b=>b.classList.remove('active'));
+  const btn=document.getElementById('mcbtn-'+name);if(btn)btn.classList.add('active');
+  mapCiudadActual=name;
+  const ciudad=CIUDADES[name];
+  document.getElementById('mapa-titulo').textContent='🗺 Maratón de '+name;
+  document.getElementById('mapa-subtitulo').textContent='42,195 km · '+ciudad.puntos.length+' puntos marcados';
+  document.getElementById('map-no-city').style.display='none';
+  document.getElementById('map-legend').style.display='block';
+  clearMapaLayers();
+
+  // Línea del recorrido
+  const poly=L.polyline(ciudad.coords,{color:'#1a6fc4',weight:4,opacity:.85}).addTo(leafletMap);
+  mapaLayers.push(poly);
+
+  // Icono personalizado para km
+  const kmIcon=(km,isStart,isMeta)=>{
+    const bg=isStart?'#1a9e5c':isMeta?'#c0392b':'#1a6fc4';
+    const label=isStart?'S':isMeta?'🏁':km;
+    return L.divIcon({
+      className:'',
+      html:`<div style="background:${bg};color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:${isMeta?'12px':'10px'};font-weight:800;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.3);white-space:nowrap;">${label}</div>`,
+      iconSize:[26,26],iconAnchor:[13,13]
+    });
+  };
+
+  // Icono para puntos de encuentro del corredor activo
+  const myIcon=(km)=>{
+    return L.divIcon({
+      className:'',
+      html:`<div style="background:#e8a020;color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.3);">${km}</div>`,
+      iconSize:[22,22],iconAnchor:[11,11]
+    });
+  };
+
+  // Marcadores de KM de la ciudad (cada 5km + meta)
+  const todosKm=ciudad.puntos;
+  // Solo mostrar km 5, 10, 15... + meta para no saturar
+  const kmFiltrados=todosKm.filter(p=>p.km%5===0||p.km===42.195||p.km===2);
+  
+  // Calcular posición interpolada en la polyline para cada km
+  const totalCoords=ciudad.coords.length;
+  kmFiltrados.forEach(p=>{
+    const progr=p.km/42.195;
+    const idx=Math.min(Math.floor(progr*(totalCoords-1)),totalCoords-1);
+    const lat=ciudad.coords[idx][0];
+    const lng=ciudad.coords[idx][1];
+    const isStart=p.km<=2;
+    const isMeta=p.km>=42;
+    const marker=L.marker([lat,lng],{icon:kmIcon(p.km,isStart,isMeta)})
+      .bindTooltip(isStart?'🏁 SALIDA':(isMeta?'🏁 META · '+p.calle:'km '+p.km+' · '+p.calle),{permanent:false,direction:'top',offset:[0,-14]})
+      .addTo(leafletMap);
+    mapaLayers.push(marker);
+  });
+
+  // Si hay corredor activo con esta ciudad y puntos de encuentro, mostrarlos en naranja
+  if(ca!==null&&C[ca]&&C[ca].ciudad===name){
+    const pasosCorredor=C[ca].pasos||[];
+    pasosCorredor.forEach(p=>{
+      const progr=p.km/42.195;
+      const idx=Math.min(Math.floor(progr*(totalCoords-1)),totalCoords-1);
+      const lat=ciudad.coords[idx][0];
+      const lng=ciudad.coords[idx][1];
+      const m2=L.marker([lat,lng],{icon:myIcon(p.km)})
+        .bindTooltip('📍 '+p.calle+(p.horaReal?' · ✓ '+p.horaReal:''),{permanent:false,direction:'top',offset:[0,-12]})
+        .addTo(leafletMap);
+      mapaLayers.push(m2);
+    });
+  }
+
+  leafletMap.fitBounds(poly.getBounds(),{padding:[30,30]});
+  setTimeout(()=>leafletMap.invalidateSize(),150);
+}
+
+// ===================== FICHA =====================
 function buildCityGrid(){
   const g=document.getElementById('city-grid');
   g.innerHTML=Object.entries(CIUDADES).map(([name,d])=>
@@ -637,36 +871,45 @@ function selCiudad(name){
   const btn=document.getElementById('cbtn-'+name);if(btn)btn.classList.add('sel');
   const fc=document.getElementById('f-carrera');
   if(!fc.value||Object.keys(CIUDADES).some(c=>fc.value.includes(c)))
-    fc.value='Maratón de '+name+' 2025';
+    fc.value='Maratón de '+name+'';
   pt=CIUDADES[name].puntos.map(p=>({km:p.km,calle:p.calle}));
   rPF();
 }
 
 function rL(){
   const el=document.getElementById('lista-corredores');
-  if(!C.length){el.innerHTML='<div class="empty"><div class="empty-icon">🏃</div><p>Todavía no hay corredores.<br>Pulsa <b>"+ Nuevo corredor"</b> para empezar.</p></div>';return;}
+  if(!C.length){el.innerHTML='<div style="text-align:center;padding:48px 20px;color:var(--text2);"><div style="font-size:3rem;margin-bottom:12px;">🏃</div><p>Aún no hay corredores.<br>Pulsa <b>"+ Nuevo corredor"</b> para empezar.</p></div>';return;}
   el.innerHTML=C.map((c,i)=>{
     const p=(c.pasos||[]).filter(x=>x.horaReal).length,tt=(c.pasos||[]).length;
-    const b=p===0?'<span class="badge badge-yellow">No iniciado</span>':
-             p>=tt?'<span class="badge badge-green">Terminado ✓</span>':
-             '<span class="badge badge-red">En carrera · '+p+'/'+tt+'</span>';
+    const b=p===0?'<span class="badge badge-yellow">En espera</span>':
+             p>=tt?'<span class="badge badge-green">Finalizado ✓</span>':
+             '<span class="badge badge-red">Auf der Recorrido · '+p+'/'+tt+'</span>';
     const flag=c.ciudad&&CIUDADES[c.ciudad]?CIUDADES[c.ciudad].flag+' ':'🏙️ ';
     return '<div class="runner-item">'+
       '<div class="runner-avatar">'+c.nombre.charAt(0).toUpperCase()+'</div>'+
       '<div class="runner-info">'+
         '<div class="runner-name">'+c.nombre+(c.dorsal?' <span style="color:var(--text2);font-size:.8rem;">#'+c.dorsal+'</span>':'')+'</div>'+
-        '<div class="runner-sub">'+flag+(c.carrera||'—')+' · Marca: '+(c.marca||'—')+' · '+(c.ritmo||'—')+'/km</div>'+
+        '<div class="runner-sub">'+flag+(c.carrera||'—')+' · Marca objetivo: '+(c.marca||'—')+' · '+(c.ritmo||'—')+'/km</div>'+
         '<div style="margin-top:5px;">'+b+'</div>'+
       '</div>'+
       '<div class="runner-actions">'+
         '<button class="btn btn-outline btn-sm" onclick="eC('+i+')">✏️ Editar</button>'+
         '<button class="btn btn-primary btn-sm" onclick="aS('+i+')">📍 Seguir</button>'+
+        '<button class="btn btn-outline btn-sm" onclick="verMapa('+i+')">Recorrido</button>'+
         '<button class="btn btn-danger btn-sm" onclick="bC('+i+')">🗑</button>'+
       '</div></div>';
   }).join('');
 }
 
-function bC(i){if(confirm('"'+C[i].nombre+'" ?')){C.splice(i,1);sv();rL();}}
+function verMapa(i){
+  ca=i;
+  showPage('mapa');
+  if(C[i].ciudad){
+    setTimeout(()=>loadMapaCiudad(C[i].ciudad),200);
+  }
+}
+
+function bC(i){if(confirm('¿Eliminar a "'+C[i].nombre+'"?')){C.splice(i,1);sv();rL();}}
 
 function nuevoCorreder(){
   ca=null;ciudadSel=null;
@@ -674,7 +917,7 @@ function nuevoCorreder(){
   setMarca('');
   document.getElementById('f-sexo').value='';
   document.getElementById('diferencia-salida').style.display='none';
-  document.getElementById('ficha-titulo').textContent='Nuevo Corredor';
+  document.getElementById('ficha-titulo').textContent='Nuevo corredor';
   pt=[];buildCityGrid();rPF();showPage('ficha');
 }
 
@@ -723,7 +966,7 @@ function syncSalida(){
   if(o&&o!==p){
     const d=t2s(p)-t2s(o);
     el.style.display='block';
-    el.textContent=Math.abs(d)+'s '+(d>0?'más tarde':'antes')+' — Hora oficial actualizada a la hora de chip.';
+    el.textContent=Math.abs(d)+'s '+(d>0?'más tarde':'antes')+' — Hora oficial actualizada a hora de chip.';
   }else el.style.display='none';
 }
 
@@ -753,7 +996,7 @@ function aS(i){
   ca=i;const c=C[i];
   document.getElementById('seg-nombre').textContent=c.nombre+(c.dorsal?' #'+c.dorsal:'');
   const flag=c.ciudad&&CIUDADES[c.ciudad]?CIUDADES[c.ciudad].flag+' ':'';
-  document.getElementById('seg-sub').textContent=flag+(c.carrera||'')+' · Marca: '+(c.marca||'—')+' ('+(c.ritmo||'—')+'/km)';
+  document.getElementById('seg-sub').textContent=flag+(c.carrera||'')+' · Marca objetivo: '+(c.marca||'—')+' ('+(c.ritmo||'—')+'/km)';
   rS();showPage('seguimiento');
   clearInterval(timerSeg);timerSeg=setInterval(tick,1000);tick();
 }
@@ -765,7 +1008,7 @@ function tick(){
   const diff=Math.floor((ahora-sd)/1000);
   if(diff<0){reloj.textContent='⏳ Salida en '+fh(-diff);return;}
   reloj.textContent='⏱ '+fh(diff);
-  document.getElementById('stat-tc').textContent=fh(diff);
+ 
   const pasos=c.pasos||[],conHora=pasos.filter(p=>p.horaRealSecs!=null);
   if(conHora.length>0){
     const u=conHora[conHora.length-1],tc=u.horaRealSecs-t2s(c.salidaOficial);
@@ -773,13 +1016,13 @@ function tick(){
       const r=tc/u.km;
       document.getElementById('stat-ra').textContent=fm(r)+'/km';
       document.getElementById('stat-mp').textContent=s2t(t2s(c.salidaOficial)+r*KM);
-      document.getElementById('stat-marca-proj').textContent=fh(r*KM);
+      document.getElementById('stat-bz').textContent=fh(r*KM);
     }
   }else{
-    const ms=ph(c.marca);
-    if(ms)document.getElementById('stat-mp').textContent=s2t(t2s(c.salidaOficial)+ms);
+    const ms2=ph(c.marca);
+    if(ms2)document.getElementById('stat-mp').textContent=s2t(t2s(c.salidaOficial)+ms2);
+    if(ms2)document.getElementById('stat-bz').textContent=fh(ms2);
     document.getElementById('stat-ra').textContent=c.ritmo?c.ritmo+'/km':'—';
-    const msp=ph(c.marca);if(msp)document.getElementById('stat-marca-proj').textContent=fh(msp);
   }
 }
 
@@ -809,12 +1052,12 @@ function rS(){
   if(mp&&c.salidaOficial){
     const tf=mp.horaRealSecs-t2s(c.salidaOficial);
     mc.style.display='block';document.getElementById('seg-meta-t').textContent=fh(tf);
-    const ms=ph(c.marca);
-    if(ms){
-      const d=tf-ms,el=document.getElementById('seg-meta-d');
+    const ms3=ph(c.marca);
+    if(ms3){
+      const d=tf-ms3,el=document.getElementById('seg-meta-d');
       if(Math.abs(d)<=30)el.innerHTML='<span class="badge badge-green">🎯 ¡En marca! '+c.marca+'</span>';
       else if(d>0)el.innerHTML='<span class="badge badge-red">+'+fh(d)+' sobre la marca objetivo</span>';
-      else el.innerHTML='<span class="badge badge-green">🎉 '+fh(-d)+' bajo la marca objetivo</span>';
+      else el.innerHTML='<span class="badge badge-green">🎉 '+fh(-d)+' unter Marca objetivo</span>';
     }
   }else mc.style.display='none';
 }
@@ -843,39 +1086,34 @@ function autoRellenarProno(){
   if(ch.length&&c.salidaOficial){
     const u=ch[ch.length-1],tc=u.horaRealSecs-t2s(c.salidaOficial);
     document.getElementById('prono-km').value=u.km;
-    const _tc=Math.round(tc);
-    document.getElementById('prono-t-h').value=Math.floor(_tc/3600);
-    document.getElementById('prono-t-m').value=pad(Math.floor((_tc%3600)/60));
-    document.getElementById('prono-t-s').value=pad(_tc%60);
+    const _hv=Math.floor(tc/3600);document.getElementById('prono-th').value=_hv;document.getElementById('prono-tm2').value=('0'+Math.floor((tc%3600)/60)).slice(-2);document.getElementById('prono-ts').value=('0'+Math.round(tc%60)).slice(-2);
   }
   calcProno();
 }
 function calcProno(){
   const km=parseFloat(document.getElementById('prono-km').value);
-  const _ph=parseInt(document.getElementById('prono-t-h').value)||0;
-  const _pm=parseInt(document.getElementById('prono-t-m').value)||0;
-  const _ps=parseInt(document.getElementById('prono-t-s').value)||0;
-  const ts=(_ph*3600+_pm*60+_ps)||0;
+  const _th=parseInt(document.getElementById('prono-th').value)||0,_tm=parseInt(document.getElementById('prono-tm2').value)||0,_ts2=parseInt(document.getElementById('prono-ts').value)||0;const ts=_th*3600+_tm*60+_ts2;
   const dist=parseFloat(document.getElementById('prono-dist').value)||KM;
   const el=document.getElementById('prono-res');
   if(!km||!ts||km<=0||km>dist||ts<=0){el.style.display='none';return;}
   const r=ts/km,tot=r*dist,res=dist-km;
-  document.getElementById('prono-tm').textContent=fh(tot);
+  const _tot=Math.round(Math.abs(tot));document.getElementById('prono-tm-h').textContent=Math.floor(_tot/3600);document.getElementById('prono-tm-m').textContent=('0'+Math.floor((_tot%3600)/60)).slice(-2);document.getElementById('prono-tm-s').textContent=('0'+(_tot%60)).slice(-2);
   document.getElementById('prono-rm').textContent=fm(r)+'/km';
   document.getElementById('prono-kr').textContent=res.toFixed(2)+' km';
   const idx=document.getElementById('prono-corredor').value;
   let hl='—';
   if(idx!==''){const c=C[idx];if(c.salidaOficial)hl=s2t(t2s(c.salidaOficial)+tot);}
+  else{const now=new Date();const nowS=now.getHours()*3600+now.getMinutes()*60+now.getSeconds();hl=s2t(nowS+tot);}
   document.getElementById('prono-hl').textContent=hl;
   const vs=document.getElementById('prono-vs');
   if(idx!==''){
-    const c=C[idx],ms=ph(c.marca);
-    if(ms){
+    const c=C[idx],ms4=ph(c.marca);
+    if(ms4){
       vs.style.display='block';
-      const d=tot-ms,e=document.getElementById('prono-vs-t');
-      if(Math.abs(d)<=30)e.innerHTML='<span class="badge badge-green">🎯 En ritmo objetivo: '+fh(tot)+' vs '+c.marca+'</span>';
-      else if(d>0)e.innerHTML='<span class="badge badge-red">+'+fh(d)+' sobre la marca objetivo ('+c.marca+')</span>';
-      else e.innerHTML='<span class="badge badge-green">🔥 '+fh(-d)+' bajo la marca objetivo ('+c.marca+')</span>';
+      const d=tot-ms4,e=document.getElementById('prono-vs-t');
+      if(Math.abs(d)<=30)e.innerHTML='<span class="badge badge-green">🎯 ¡En la marca! '+fh(tot)+' vs '+c.marca+'</span>';
+      else if(d>0)e.innerHTML='<span class="badge badge-red">+'+fh(d)+' über Marca objetivo ('+c.marca+')</span>';
+      else e.innerHTML='<span class="badge badge-green">🔥 '+fh(-d)+' unter Marca objetivo ('+c.marca+')</span>';
     }else vs.style.display='none';
   }else vs.style.display='none';
   el.style.display='block';
@@ -883,8 +1121,5 @@ function calcProno(){
 
 rL();
 </script>
-<div style="text-align:center;padding:16px;font-size:.7rem;color:#a0b4cc;">
-  © 2026 [Manuel Fernández Oviedo] · Todos los derechos reservados
-</div>
 </body>
 </html>
