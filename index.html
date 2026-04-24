@@ -110,6 +110,9 @@
   }
   @media(orientation:portrait) and (max-width:768px){.landscape-hint{display:flex !important}}
   .landscape-hint{display:none}
+  .leaflet-popup-content-wrapper{border-radius:12px!important;box-shadow:0 4px 20px rgba(0,0,0,0.15)!important;}
+  .leaflet-popup-content{margin:12px 14px!important;}
+  .km-popup .leaflet-popup-tip{background:white;}
 </style>
 </head>
 <body>
@@ -850,13 +853,99 @@ function loadMapaCiudad(name){
     });
   };
 
+  // Descripciones locales por ciudad y km
+  const DESC={
+    "Berlín":{
+      5:"Inicio en Tiergarten, el pulmón verde de Berlín. Gran ambiente desde la salida.",
+      10:"Zona de Charlottenburg — elegantes bulevares y la Gedächtniskirche al fondo.",
+      15:"Ku'damm (Kurfürstendamm) — el gran bulevar comercial, mucho público aquí.",
+      20:"Barrio de Schöneberg, ambiente muy animado y colorido.",
+      25:"Cruce con el Muro — Potsdamer Platz y el memorial del Holocausto a la vista.",
+      30:"Unter den Linden — el paseo más emblemático de Berlín, espectacular.",
+      35:"Museumsinsel — la Isla de los Museos, Patrimonio UNESCO. Tramo precioso.",
+      40:"Último gran esfuerzo antes de la Puerta de Brandeburgo.",
+      42.195:"🏁 META — Puerta de Brandeburgo. ¡Una de las metas más épicas del mundo!"
+    },
+    "Tokio":{
+      5:"Salida desde Tokyo Metropolitan Government Building. Skyline impresionante.",
+      10:"Barrio de Shinjuku — neón, rascacielos y un público increíblemente animado.",
+      15:"Asakusa y el templo Senso-ji al horizonte. El Tokio más tradicional.",
+      20:"Cruce del río Sumida con vistas a la Tokyo Skytree (634m). Foto obligatoria.",
+      25:"Zona de Tsukiji — el antiguo mercado de pescado más famoso del mundo.",
+      30:"Ginza — el barrio más exclusivo de Tokio. Joyerías y galerías de arte.",
+      35:"Marunouchi — el corazón financiero, frente a la Estación Central de Tokio.",
+      40:"Imperial Palace Gardens — los jardines del Palacio Imperial. Tramo sereno y precioso.",
+      42.195:"🏁 META — Tokyo Big Sight. ¡Kampai! 乾杯"
+    },
+    "Rotterdam":{
+      5:"Puerto de Rotterdam — el más grande de Europa. Ambiente industrial espectacular.",
+      10:"Wilhelminaplein — zona portuaria reconvertida, arquitectura moderna muy llamativa.",
+      15:"Cruce del Erasmusbrug (Puente Erasmo) — el símbolo de Rotterdam. Momento único.",
+      20:"Kop van Zuid — barrio emergente con vistas al río Mosa. Muy animado.",
+      25:"Feijenoord — zona obrera con gran tradición maratoniana y público fiel.",
+      30:"Kralingse Bos — el gran parque del lago de Rotterdam. Tramo tranquilo y bonito.",
+      35:"De Kuip — el estadio del Feyenoord. Los aficionados llenan la calle aquí.",
+      40:"Coolsingel — la gran avenida del centro, reconstruida tras la WWII.",
+      42.195:"🏁 META — Coolsingel. ¡Rotterdam te recibe como héroe!"
+    },
+    "New York":{
+      5:"Cruce del Verrazzano Bridge — vistas espectaculares a Manhattan desde Staten Island.",
+      10:"Brooklyn — barrio de Bay Ridge, comunidades de todo el mundo animando.",
+      15:"Bedford-Stuyvesant — el corazón del Brooklyn histórico y afroamericano.",
+      20:"Puente de Queensboro — silencio y luego el rugido de Manhattan. Momento legendario.",
+      25:"1st Avenue — el kilómetro más ruidoso del mundo. El público es increíble aquí.",
+      30:"El Bronx — cruzas el puente Willis, única aparición del 'Bronx' en el recorrido.",
+      35:"Harlem — 5th Avenue y Marcus Garvey Park. Batería de gospel en directo.",
+      40:"Central Park — entras por el sur. Ya hueles la meta. Público en las dos orillas.",
+      42.195:"🏁 META — Central Park, Tavern on the Green. ¡New York, New York!"
+    },
+    "Chicago":{
+      5:"Grant Park — el parque donde nace y muere el maratón. Salida con vistas al lago Michigan.",
+      10:"Lincoln Park — el barrio más verde de Chicago, a orillas del lago. Tramo precioso.",
+      15:"Lakeview y Wrigleyville — zona del Wrigley Field (béisbol). Ambiente de barrio.",
+      20:"River North — cruce del río Chicago, rascacielos y terrazas llenas de público.",
+      25:"The Loop — el corazón financiero de Chicago, rodeado de arquitectura histórica.",
+      30:"Pilsen — el barrio mexicano de Chicago. Murales, música y mucho apoyo.",
+      35:"Chinatown — aromas y colores únicos. Gran apoyo de la comunidad local.",
+      40:"Museum Campus — el Museo Field y el Shedd Aquarium a la derecha, el lago a la izquierda.",
+      42.195:"🏁 META — Grant Park, Columbus Drive. ¡Chicago te da una medalla enorme!"
+    },
+    "Sídney":{
+      5:"Pyrmont — barrio portuario reconvertido en hub tecnológico. Vistas al Darling Harbour.",
+      10:"Millers Point — uno de los barrios más antiguos de Sídney, junto al puerto histórico.",
+      15:"Macquarie Street — la calle del poder: Parlamento, Hospital y Jardines Botánicos.",
+      20:"Anzac Parade — el gran bulevar de los héroes australianos. Tramo largo y recto.",
+      25:"Centennial Park — el Central Park de Sídney. Eucaliptos, canguros y silencio.",
+      30:"Moore Park — junto al Allianz Stadium, casa del rugby australiano.",
+      35:"Surry Hills — barrio hipster con cafés de especialidad. Público joven y animado.",
+      40:"Mrs Macquaries Road — vistas al puente y a la Ópera. El kilómetro más fotogénico.",
+      42.195:"🏁 META — The Domain. Con la Ópera de Sídney de fondo. Inolvidable."
+    }
+  };
+
+  // Calcular hora prevista en un km dado
+  const calcHoraPrevista=(km)=>{
+    const corredor=ca!==null&&C[ca]?C[ca]:null;
+    if(!corredor) return null;
+    const salida=corredor.salidaPersonal||corredor.salidaOficial;
+    if(!salida) return null;
+    const ritmoStr=corredor.ritmo;
+    if(!ritmoStr) return null;
+    const parts=ritmoStr.split(':');
+    if(parts.length<2) return null;
+    const ritmoSeg=parseInt(parts[0])*60+parseInt(parts[1]);
+    const totalSeg=t2s(salida)+Math.round(km*ritmoSeg);
+    const h=Math.floor(totalSeg/3600)%24;
+    const m=Math.floor((totalSeg%3600)/60);
+    return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+  };
+
   // Marcadores de KM de la ciudad (cada 5km + meta)
   const todosKm=ciudad.puntos;
-  // Solo mostrar km 5, 10, 15... + meta para no saturar
   const kmFiltrados=todosKm.filter(p=>p.km%5===0||p.km===42.195||p.km===2);
   
-  // Calcular posición interpolada en la polyline para cada km
   const totalCoords=ciudad.coords.length;
+  const descCiudad=DESC[name]||{};
   kmFiltrados.forEach(p=>{
     const progr=p.km/42.195;
     const idx=Math.min(Math.floor(progr*(totalCoords-1)),totalCoords-1);
@@ -864,8 +953,18 @@ function loadMapaCiudad(name){
     const lng=ciudad.coords[idx][1];
     const isStart=p.km<=2;
     const isMeta=p.km>=42;
+    const horaPrev=calcHoraPrevista(p.km);
+    const desc=descCiudad[p.km]||descCiudad[Math.round(p.km)]||'';
+    const kmLabel=isStart?'SALIDA':isMeta?'META':'Km '+p.km;
+    const popupHTML=`<div style="font-family:sans-serif;min-width:180px;max-width:240px;">
+      <div style="font-weight:800;font-size:.95rem;color:#1a2740;margin-bottom:4px;">📍 ${kmLabel}</div>
+      <div style="font-size:.82rem;color:#555;margin-bottom:${horaPrev||desc?'8px':'0'};">${p.calle}</div>
+      ${horaPrev?`<div style="background:#eef4ff;border-radius:6px;padding:5px 8px;margin-bottom:${desc?'6px':'0'};font-size:.82rem;">⏱ <strong>Hora prevista: ${horaPrev}</strong></div>`:''}
+      ${desc?`<div style="font-size:.8rem;color:#444;line-height:1.4;">💬 ${desc}</div>`:''}
+    </div>`;
     const marker=L.marker([lat,lng],{icon:kmIcon(p.km,isStart,isMeta)})
       .bindTooltip(isStart?'🏁 SALIDA':(isMeta?'🏁 META · '+p.calle:'km '+p.km+' · '+p.calle),{permanent:false,direction:'top',offset:[0,-14]})
+      .bindPopup(popupHTML,{maxWidth:260,className:'km-popup'})
       .addTo(leafletMap);
     mapaLayers.push(marker);
   });
