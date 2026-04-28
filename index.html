@@ -163,7 +163,7 @@ async function checkLicense(){
     ok.style.display="block";
     setTimeout(function(){document.getElementById("license-screen").style.display="none";},1800);
   }catch(e){
-    if(String(e)==="expired"){err.textContent="Licence expirée. Contactez votre fournisseur.";}else if(String(e)==="tampered"){err.textContent="Code invalide.";}else{err.textContent="Code invalide. Bitte überprüfe die Eingabe.";}
+    if(String(e)==="expired"){err.textContent="Licence expirée. Contactez votre fournisseur.";}else if(String(e)==="tampered"){err.textContent="Code invalide.";}else{err.textContent="Código no válido. Por favor, comprueba los datos introducidos.";}
     var inp=document.getElementById("lic-input");inp.style.borderColor="#c0392b";
     setTimeout(function(){inp.style.borderColor="#c8d8ee";},2000);
   }
