@@ -159,7 +159,7 @@ async function checkLicense(){
     sessionStorage.setItem("mt_lic_empresa",empresa);
     sessionStorage.setItem("mt_lic_expiry",_fd(expiry));
     sessionStorage.setItem("mt_lic_days",daysLeft);
-    ok.innerHTML="Bienvenue, <b>"+empresa+"</b><br>Licence valable jusqu'au : "+_fd(expiry)+" &middot; <b>"+daysLeft+" jours restants</b>";
+    ok.innerHTML="Bienvenido, <b>"+empresa+"</b><br>Licencia válida hasta : "+_fd(expiry)+" &middot; <b>"+daysLeft+" días restantes</b>";
     ok.style.display="block";
     setTimeout(function(){document.getElementById("license-screen").style.display="none";},1800);
   }catch(e){
